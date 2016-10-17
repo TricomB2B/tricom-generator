@@ -62,6 +62,8 @@ module.exports = yeoman.Base.extend({
     this.fs.copy(this.templatePath('gulpfile.js'), this.destinationPath('gulpfile.js'));
     this.fs.copy(this.templatePath('readme.md'), this.destinationPath('readme.md'));
 
+    this.fs.copy(this.templatePath('.yo-rc.json'), this.destinationPath('.yo-rc.json'));
+    this.fs.copy(this.templatePath('gitignore.txt'), this.destinationPath('.gitignore'));
     this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('img/.gitkeep'));
     this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/components/.gitkeep'));
     this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/views/.gitkeep'));
@@ -89,6 +91,9 @@ module.exports = yeoman.Base.extend({
         console.log('Everything is ready!');
       }
     });
+  },
+  config: function(){
+    this.config.set('prefix', this.props.prefix);
   }
 });
 

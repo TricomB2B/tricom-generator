@@ -68,7 +68,7 @@ module.exports = yeoman.Base.extend({
     fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
       if (err) yet.log(err);
 
-      var newValue = data.replace(/(\/\/~%~\/\/)/, '\t"'+properties.camelCase+'View", \n\t\t//~%~//');
+      var newValue = data.replace(/(\/\/!!V!!\/\/)/, '\''+properties.camelCase+'View\', \n\s\s\s\s\s\s//!!V!!//');
 
       fs.writeFile(yet.destinationPath('src/js/app.js'), newValue, 'utf-8', function (err) {
         if (err) yet.log(err);

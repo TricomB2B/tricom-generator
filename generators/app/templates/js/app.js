@@ -7,9 +7,13 @@
       'ui.router',
       // enter additional modules/components here
 
+      // Generator Views
+      //!!V!!//
+      // DO NOT MODIFY | DO NOT REMOVE LINE ABOVE IF USING GENERATOR
 
-      // DO NOT MODIFY | DO NOT REMOVE NEXT LINE IF USING GENERATOR //
-      //~%~//
+      // Generator Directives
+      //!!D!!//
+      // DO NOT MODIFY | DO NOT REMOVE LINE ABOVE IF USING GENERATOR
     ])
     .run(bootstrap)
     .config(rootConfig);
@@ -71,7 +75,17 @@
 
    $stateProvider
      .state('root', {
-       url: '/'
+       url: '',
+       abstract: 'true',
+       resolve: {
+         /*
+          * Example Factory
+          */
+         //data: function (DataFactory) {
+         //    return DataFactory.initialize().$promise;
+         //}
+         //!!F!!//
+       }
      });
    }
 
