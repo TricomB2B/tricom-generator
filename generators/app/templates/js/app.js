@@ -3,8 +3,13 @@
 
   angular
     .module('<%= prefix %>', [
-      'ngResource'
+      'ngResource',
+      'ui.router',
       // enter additional modules/components here
+
+
+      // DO NOT MODIFY | DO NOT REMOVE NEXT LINE IF USING GENERATOR //
+      //~%~//
     ])
     .run(bootstrap)
     .config(rootConfig);

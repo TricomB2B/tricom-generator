@@ -1,0 +1,128 @@
+/* =Typography
+----------------------------------------------- */
+// links
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+// color definitions
+.typography.light {
+  color: get-color("dark-blue");
+
+  a {
+    @extend .w-bold;
+    color: get-color("green");
+    text-decoration: underline;
+  }
+
+  a:hover {
+    //color: get-color(black);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    //color: get-color(black);
+  }
+}
+
+.typography.dark {
+  color: get-color("white");
+
+  a {
+    //color: get-color(white);
+  }
+
+  a:hover {
+    //color: get-color(white);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    //color: get-color(white);
+  }
+}
+
+// font styling and sizing
+p, small, h1, h2, h3, h4, h5, h6, li, button, svg text {
+  color: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Helvetica, sans-serif;
+  color: inherit;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+p, li  {
+  font-family: "Open Sans";
+  @include font-size(16);
+}
+
+p {
+  margin-bottom: modular-scale(1);
+}
+
+small {
+  font-family: "Open Sans";
+  @include font-size(12);
+}
+
+h1 {
+  @include font-size(90);
+
+  @include media($desktop) {
+    @include font-size(110);
+  }
+}
+h2 { @include font-size(62); }
+h3 { @include font-size(48); }
+h4 { @include font-size(36); }
+h5 { @include font-size(21); }
+h6 { @include font-size(14); }
+
+h5.big {
+  @include font-size(24);
+}
+
+.no-margin {
+  line-height: 1em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.no-line-height {
+  line-height: 0;
+}
+
+// positional helper classes
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+.text-right  { text-align: right; }
+.text-middle {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+// text styling helper classes
+.w-xlight    { font-weight: 200; }
+.w-light     { font-weight: 300; }
+.w-regular   { font-weight: 400; }
+.w-semibold  { font-weight: 600; }
+.w-bold      { font-weight: 700; }
+.w-xbold     { font-weight: 800; }
+.uppercase   { text-transform: uppercase; }
+.lowercase   { text-transform: lowercase; }
+.italic      { font-style: italic; }
+.underline   { text-decoration: underline; }
+
+// shadows
+.text-shadow {
+  text-shadow: 0px 5px 12px rgba(0,0,0,0.45);
+}
+
+.text-shadow-alt {
+  text-shadow: 0px 5px 8px rgba(0,0,0,0.45);
+}

@@ -1,10 +1,19 @@
-@import '../../node_modules/bourbon/app/assets/stylesheets/bourbon';
-@import '../../node_modules/bourbon-neat/app/assets/stylesheets/neat';
+/**
+*    ___   ___    _  _  ___ _____   __  __  ___  ___ ___ _____   __
+*   |   \ / _ \  | \| |/ _ \_   _| |  \/  |/ _ \|   \_ _| __\ \ / /
+*   | |) | (_) | | .` | (_) || |   | |\/| | (_) | |) | || _| \ V /
+*   |___/ \___/  |_|\_|\___/ |_|   |_|  |_|\___/|___/___|_|   |_|
+* This file is generated with SASS and will be overwritten
+*/
 
-@import "functions";
-@import "mixins";
+// bourbonize it
+@import "../../node_modules/bourbon/app/assets/stylesheets/bourbon";
+@import "../../node_modules/bourbon-neat/app/assets/stylesheets/neat";
+
+// normalize it
+@import "../../node_modules/normalize.css/normalize";
+
+@import "util/util";;
 @import "settings";
-@import "global";
-@import "modules";
-
+@import "styling/styling";
 // import additional modules here

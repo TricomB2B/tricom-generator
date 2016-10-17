@@ -56,21 +56,15 @@ module.exports = yeoman.Base.extend({
     mkdirp.sync(this.destinationPath('src/views'));
     mkdirp.sync(this.destinationPath('src/js'));
 
-    this.bulkDirectory(this.templatePath('static'), this.destinationPath('')); // Copies all files from static directory into root
-    this.bulkDirectory(this.templatePath('scss'), this.destinationPath('src/scss/'));
+    this.directory('scss', 'src/scss/');
 
-    this.fs.copy(
-      this.templatePath('.gitkeep'),
-      this.destinationPath('img/.gitkeep')
-    );
-    this.fs.copy(
-      this.templatePath('.gitkeep'),
-      this.destinationPath('src/components/.gitkeep')
-    );
-    this.fs.copy(
-      this.templatePath('.gitkeep'),
-      this.destinationPath('src/views/.gitkeep')
-    );
+    this.fs.copy(this.templatePath('.htaccess'), this.destinationPath('.htaccess'));
+    this.fs.copy(this.templatePath('gulpfile.js'), this.destinationPath('gulpfile.js'));
+    this.fs.copy(this.templatePath('readme.md'), this.destinationPath('readme.md'));
+
+    this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('img/.gitkeep'));
+    this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/components/.gitkeep'));
+    this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/views/.gitkeep'));
 
     this.fs.copyTpl(
       this.templatePath('index.html'),

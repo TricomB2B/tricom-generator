@@ -12,8 +12,8 @@
 
     function <%= camelCase %>Config ($stateProvider) {
         $stateProvider
-            .state('<%= lowerCase %>', {
-                url: '/',
+            .state('<%= state %>', {
+                url: '<%= url %>',
                 views: {
                     'main@': {
                         templateUrl: getView('<%= lowerCase %>'),
@@ -28,7 +28,7 @@
 
         var <%= controllerAs %> = this;
 
-        <%= controllerAs %>.name = '<%= camelCase =>';
+        <%= controllerAs %>.name = '<%= camelCase %>';
 
     }
 })();

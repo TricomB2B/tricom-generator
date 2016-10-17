@@ -1,34 +1,72 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
-
+<html class="no-js" lang="en" itemscope itemtype="https://schema.org/WebSite">
 <head>
-  <base href="/">
-  <title><%= name %></title>
-  <meta charset="UTF-8"/>
-  <meta name="description" content="<%= description %>"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
+  <!-- Basics -->
+  <base href="/">
+  <meta charset="UTF-8"/>
+  <title><%= name %></title>
+  <meta name="description" content="<%= description %>"/>
+
+  <!-- Web-app capable and viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=yes">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Icons and splash pages -->
   <link rel="apple-touch-icon" sizes="180x180" href="img/favicons/apple-touch-icon.png">
   <link rel="icon" type="image/png" href="img/favicons/favicon-32x32.png" sizes="32x32">
   <link rel="icon" type="image/png" href="img/favicons/favicon-16x16.png" sizes="16x16">
   <link rel="manifest" href="img/favicons/manifest.json">
-  <link rel="mask-icon" href="img/favicons/safari-pinned-tab.svg" color="<%= primaryColor %>">
+  <link rel="mask-icon" href="img/favicons/safari-pinned-tab.svg" color="#5bbad5">
   <meta name="theme-color" content="<%= primaryColor %>">
 
-  <link rel="stylesheet" href="css/style.min.css" />
+  <!-- Schema.org markup for Google+ -->
+  <meta itemprop="name" content="<%= name %>">
+  <meta itemprop="description" content="This is the page description">
+  <meta itemprop="image" content="http://www.example.com/image.jpg">
+
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@publisher_handle">
+  <meta name="twitter:title" content="<%= name %>">
+  <meta name="twitter:description" content="<%= description %>">
+  <meta name="twitter:creator" content="@author_handle">
+  <!-- Twitter summary card with large image must be at least 280x150px -->
+  <meta name="twitter:image:src" content="http://www.example.com/image.jpg">
+
+  <!-- Open Graph data -->
+  <meta property="og:title" content="<%= name %>" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="http://www.example.com/" />
+  <meta property="og:image" content="http://example.com/image.jpg" />
+  <meta property="og:description" content="<%= description %>" />
+  <meta property="og:site_name" content="Site Name, i.e. Moz" />
+  <meta property="article:published_time" content="2013-09-17T05:59:00+01:00" />
+  <meta property="article:modified_time" content="2013-09-16T19:08:47+01:00" />
+  <meta property="article:section" content="Article Section" />
+  <meta property="article:tag" content="Article Tag" />
+  <meta property="fb:admins" content="Facebook numberic ID" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="dist/css/app.min.css" />
 
 </head>
-
 <body>
 
+<!-- Global container -->
 <div id="global-container">
   <div ui-view="main"></div>
 </div>
 
-<script src="js/vendors.min.js"></script>
-<script src="js/app.min.js"></script>
+<!-- Scripts -->
+<script src="dist/vendors/vendors.min.js"></script>
+<script src="dist/js/app.min.js"></script>
 <script type="text/javascript">
   angular.bootstrap(document.body, ['<%= prefix %>']);
 </script>
+
 </body>
 </html>
