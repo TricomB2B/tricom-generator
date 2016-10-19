@@ -6,20 +6,20 @@
     'use strict';
 
     angular
-        .module('<%= camelCase %>Directive', [])
-        .directive('<%= camelCase %>', <%= camelCase %>);
+        .module('<%= prefix %><%= camelCase %>Directive', [])
+        .directive('<%= prefix %><%= camelCase %>', <%= prefix %><%= camelCase %>);
 
     /**
      * @return {[type]} [description]
      * @ngInject
      */
-    function <%= camelCase %> () {
+    function <%= prefix %><%= camelCase %> () {
         return {
             restrict: '<%= attribute ? "AEC" : "E" %>',
-            templateUrl: getView('<%= urlSafe %>'),
-            scope: <%= isolateScope ? {} : "'@'" %>,
+            templateUrl: getView('<%= prefix %>-<%= urlSafe %>'),
             controller: <%= camelCase %>Ctrl,
-            consollerAs: '<%= controllerAs %>'
+            controllerAs: '<%= controllerAs %>'
+            <%= isolateScope ? 'scope: {}' : '' %>
         };
     }
 

@@ -16,7 +16,7 @@
                 url: '<%= url %>',
                 views: {
                     'main@': {
-                        templateUrl: getView('<%= lowerCase %>'),
+                        templateUrl: getView('<%= camelCase %>'),
                         controller: <%= camelCase %>Ctrl,
                         controllerAs: '<%= controllerAs %>'
                     }

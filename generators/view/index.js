@@ -1,84 +1,113 @@
 'use strict';
 var yeoman = require('yeoman-generator'),
-  chalk = require('chalk'),
-  yosay = require('yosay'),
-  fs = require('fs');
+	chalk = require('chalk'),
+	yosay = require('yosay'),
+	fs = require('fs');
 
 module.exports = yeoman.Base.extend({
-  prompting: function () {
+	prompting: function () {
 
-    var prompts = [{
-      type: 'input',
-      name: 'name',
-      message: 'What is the name of this view?',
-    }, {
-      type: 'input',
-      name: 'description',
-      message: 'Describe this view',
-      default: 'description'
-    }, {
-      type: 'input',
-      name: 'url',
-      message: 'View url'
-    }, {
-      type: 'input',
-      name: 'state',
-      message: 'View State'
-    }];
+		var prompts = [{
+			type: 'input',
+			name: 'name',
+			message: 'What is the name of this view?',
+		}, {
+			type: 'input',
+			name: 'description',
+			message: 'Describe this view',
+			default: 'description'
+		}, {
+			type: 'confirm',
+			name: 'stateParams',
+			message: 'Does this state utilize a parameter?'
+		}, {
+			type: 'input',
+			name: 'url',
+			message: 'View url'
+		}, {
+			type: 'input',
+			name: 'state',
+			message: 'View State'
+		}];
 
-    return this.prompt(prompts).then(function (props) {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-      this.log(props);
+		return this.prompt(prompts).then(function (props) {
+			// To access props later use this.props.someAnswer;
+			this.props = props;
+			this.log(props);
 
-    }.bind(this));
-  },
-  writing: function () {
+		}.bind(this));
+	},
+	writing: function () {
 
-    var properties = {
-      name: this.props.name,
-      description: this.props.description,
-      url: this.props.url,
-      state: this.props.state,
-      lowerCase: this.props.name.toLowerCase(),
-      camelCase: this.props.name.charAt(0).toUpperCase() + this.props.name.slice(1),
-      controllerAs: this.props.name.toLowerCase().slice(0, 2)
-    };
+		var properties = {
+			name: this.props.name,
+			description: this.props.description,
+			url: this.props.url,
+			state: this.props.state,
+			lowerCase: this.props.name.toLowerCase(),
+			camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
+				return match.slice(match.length-1, match.length).toUpperCase();
+			}).replace(/[^A-Za-z0-9]+$/, ""),
+			controllerAs: this.props.name.toLowerCase().slice(0, 3),
+			params: []
+		};
 
-    //this.log('prefix: ' + generator.config.get('prefix'));
+		if(this.props.stateParams){
+			var matches = properties.url.match(/:[A-Za-z0-9]+/g);
 
-    this.fs.copyTpl(
-      this.templatePath('view/view.html'),
-      this.destinationPath('src/views/'+properties.name+'/'+properties.name+'.html'),
-      properties
-    );
-    this.fs.copyTpl(
-      this.templatePath('view/view.js'),
-      this.destinationPath('src/views/'+properties.name+'/'+properties.name+'.js'),
-      properties
-    );
-    this.fs.copyTpl(
-      this.templatePath('view/view.scss'),
-      this.destinationPath('src/views/'+properties.name+'/'+properties.name+'.scss'),
-      properties
-    );
+			if(matches.length > 0){
+				this.log(matches);
+				for(var i = 0; i < matches.length; i++){
+					var text = matches[i].replace(/:/, '');
+					properties.params.push(text);
+				}
+				this.log(properties.params);
+			}
+		}
 
-    var yet = this;
+		//this.log('prefix: ' + generator.config.get('prefix'));
 
-    fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
-      if (err) yet.log(err);
+		this.fs.copyTpl(
+			this.templatePath('view/view.html'),
+			this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.html'),
+			properties
+		);
+		this.fs.copyTpl(
+			this.templatePath('view/view.scss'),
+			this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.scss'),
+			properties
+		);
 
-      var newValue = data.replace(/(\/\/!!V!!\/\/)/, '\''+properties.camelCase+'View\', \n\s\s\s\s\s\s//!!V!!//');
+		if(this.props.stateParams){
+			this.fs.copyTpl(
+				this.templatePath('viewParam/view.js'),
+				this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.js'),
+				properties
+			);
+		}else{
+			this.fs.copyTpl(
+				this.templatePath('view/view.js'),
+				this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.js'),
+				properties
+			);
+		}
 
-      fs.writeFile(yet.destinationPath('src/js/app.js'), newValue, 'utf-8', function (err) {
-        if (err) yet.log(err);
-        yet.log('Updated module dependencies')
-      });
-    });
+		var yet = this;
 
-  },
-  install: function () {
-    console.log('Your view is ready');
-  }
+		fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
+			if (err) yet.log(err);
+
+			var newValue = data.replace(/(\/\/!!V!!\/\/)/, '\''+properties.camelCase+'View\', \n\t\t\t//!!V!!//');
+
+			fs.writeFile(yet.destinationPath('src/js/app.js'), newValue, 'utf-8', function (err) {
+				if (err) yet.log(err);
+				yet.log('Updated module dependencies')
+			});
+		});
+
+	},
+	install: function () {
+		this.log(chalk.green('Your view is ready'));
+	}
 
 });

@@ -12,11 +12,16 @@
 
     function <%= camelCase %>Config ($stateProvider) {
         $stateProvider
-            .state('<%= lowerCase %>', {
-                url: '/',
+            .state('<%= state %>', {
+                url: '<%= url %>',
+				resolve:{
+					<% for (var i = 0; i < params.length; i++){ %>
+						<%= '\n\t\t\t\t\t'+params[i] + ': function($stateParams){ \n\t\t\t\t\t\treturn $stateParams.'+params[i]+'; \n\t\t\t\t\t}'%>
+					<% } %>
+				},
                 views: {
                     'main@': {
-                        templateUrl: getView('<%= lowerCase %>'),
+                        templateUrl: getView('<%= camelCase %>'),
                         controller: <%= camelCase %>Ctrl,
                         controllerAs: '<%= controllerAs %>'
                     }
@@ -28,7 +33,12 @@
 
         var <%= controllerAs %> = this;
 
-        <%= controllerAs %>.name = '<%= camelCase =>';
+        <%= controllerAs %>.name = '<%= camelCase %>';
 
     }
 })();
+
+
+note: function ($stateParams) {
+	return $stateParams.note;
+}

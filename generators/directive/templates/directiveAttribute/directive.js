@@ -6,18 +6,18 @@
     'use strict';
 
     angular
-        .module('<%= camelCase %>Directive', [])
-        .directive('<%= camelCase %>', <%= camelCase %>);
+        .module('<%= prefix %><%= camelCase %>Directive', [])
+        .directive('<%= prefix %><%= camelCase %>', <%= prefix %><%= camelCase %>);
 
     /**
      * @return {[type]} [description]
      * @ngInject
      */
-    function <%= camelCase %> () {
+    function <%= prefix %><%= camelCase %> () {
         return {
             restrict: 'A',
             link: link,
-            scope: <%= isolateScope ? {} : "'@'" %>
+            <%= isolateScope ? 'scope: {}' : '' %>
         };
     }
 
