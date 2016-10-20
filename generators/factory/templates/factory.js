@@ -19,8 +19,7 @@
 
     var factory = {
       initialize: initialize,
-      //!!FC!!//
-      // DO NOT REMOVE IF USING GENERATOR //
+      //!!FC!!// DO NOT REMOVE IF USING GENERATOR //
     };
     return factory;
 
@@ -32,8 +31,7 @@
       console.log('<%= camelCase %>Factory init')
     }
 
-    //!!FF!!//
-    // DO NOT REMOVE IF USING GENERATOR //
+    //!!FF!!// DO NOT REMOVE IF USING GENERATOR //
   }
 
 })();

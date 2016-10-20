@@ -33,7 +33,6 @@ module.exports = yeoman.Base.extend({
 		return this.prompt(prompts).then(function (props) {
 			// To access props later use this.props.someAnswer;
 			this.props = props;
-			this.log(props);
 
 		}.bind(this));
 	},
