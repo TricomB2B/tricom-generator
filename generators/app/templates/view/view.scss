@@ -1,0 +1,19 @@
+.container{
+  background-image: url(https://images.unsplash.com/photo-1453225231889-b24b77c4addf?dpr=1&auto=format&crop=entropy&fit=crop&q=80&cs=tinysrgb);
+  background-size: cover;
+  background-position: center center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position:absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+h3{
+  color: rgba(225, 225, 225, 0.8);
+  margin-bottom: 50px;
+  text-transform: uppercase;
+  font-weight: 100;
+}

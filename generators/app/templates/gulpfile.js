@@ -159,17 +159,17 @@ gulp.task('default', [
   'scripts',
   'fonts',
   'views',
-  'browser-sync-proxy',
+  'browser-sync-standalone',
   'watch'
 ]);
 
 // local task builds everything, opens up a standalone server, and watches for changes
-gulp.task('local', [
+gulp.task('proxy', [
   'styles',
   'scripts',
   'fonts',
   'views',
-  'browser-sync-standalone',
+  'browser-sync-proxy',
   'watch'
 ]);
 

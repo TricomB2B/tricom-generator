@@ -56,6 +56,7 @@ module.exports = yeoman.Base.extend({
 		mkdirp.sync(this.destinationPath('src/factories'));
 		mkdirp.sync(this.destinationPath('src/filters'));
 		mkdirp.sync(this.destinationPath('src/views'));
+		mkdirp.sync(this.destinationPath('src/views/Home'));
 		mkdirp.sync(this.destinationPath('src/js'));
 
 		this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('img/.gitkeep'));
@@ -65,6 +66,9 @@ module.exports = yeoman.Base.extend({
 		this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/views/.gitkeep'));
 		this.fs.copy(this.templatePath('js/helpers.js'), this.destinationPath('src/js/helpers.js'));
 		this.fs.copy(this.templatePath('js/modernizr.js'), this.destinationPath('src/js/modernizr.js'));
+		this.fs.copy(this.templatePath('view/view.html'), this.destinationPath('src/views/Home/Home.html'));
+		this.fs.copy(this.templatePath('view/view.js'), this.destinationPath('src/views/Home/Home.js'));
+		this.fs.copy(this.templatePath('view/view.scss'), this.destinationPath('src/views/Home/Home.scss'));
 
 		this.directory('scss', 'src/scss/');
 
@@ -94,11 +98,13 @@ module.exports = yeoman.Base.extend({
 		);
 	},
 	install: function () {
+		var gen = this;
 		this.installDependencies({
 			bower:false,
 			callback: function () {
-				this.log(chalk.green('Your app is ready. Build something awesome!'));
-
+				gen.log(chalk.green('Your app is ready. Build something awesome!'));
+				gen.spawnCommand('gulp', ['vendors']);
+				gen.spawnCommand('gulp');
 			}
 		});
 	},

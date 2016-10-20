@@ -16,7 +16,7 @@
     function <%= prefix %><%= camelCase %> () {
         return {
             restrict: '<%= attribute ? "AEC" : "E" %>',
-            templateUrl: getView('<%= prefix %>-<%= urlSafe %>'),
+            templateUrl: getTemplateUrl('<%= prefix %>-<%= urlSafe %>'),
             controller: <%= camelCase %>Ctrl,
             controllerAs: '<%= controllerAs %>'
             <%= isolateScope ? 'scope: {}' : '' %>

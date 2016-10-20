@@ -18,7 +18,7 @@
 				},
                 views: {
                     'main@': {
-                        templateUrl: getView('<%= camelCase %>'),
+                        templateUrl: getTemplateUrl('<%= camelCase %>'),
                         controller: <%= camelCase %>Ctrl,
                         controllerAs: '<%= controllerAs %>'
                     }

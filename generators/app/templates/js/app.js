@@ -5,7 +5,8 @@
 		.module('<%= prefix %>', [
 			'ngResource',
 			'ui.router',
-			'DataFactory'
+			'DataFactory',
+			'HomeView',
 			// enter additional modules/components here
 
 

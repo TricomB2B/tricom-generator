@@ -8,11 +8,11 @@ a {
 
 // color definitions
 .typography.light {
-  color: get-color("dark-blue");
+  color: get-color($light-text);
 
   a {
     @extend .w-bold;
-    color: get-color("green");
+    color: get-color($light-text);
     text-decoration: underline;
   }
 
@@ -26,7 +26,7 @@ a {
 }
 
 .typography.dark {
-  color: get-color("white");
+  color: get-color($dark-text);
 
   a {
     //color: get-color(white);
@@ -71,10 +71,6 @@ small {
 
 h1 {
   @include font-size(90);
-
-  @include media($desktop) {
-    @include font-size(110);
-  }
 }
 h2 { @include font-size(62); }
 h3 { @include font-size(48); }
