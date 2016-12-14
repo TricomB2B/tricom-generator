@@ -121,7 +121,8 @@ gulp.task('views', function() {
     .pipe($.htmlmin({collapseWhitespace: true}))
     .pipe($.rename({dirname: '/'}))
     .pipe($.angularTemplatecache({
-      module: 'tcomTemplates',
+      filename: 'views.js',
+      module: 'tcomViews',
       standalone: true,
       moduleSystem: 'IIFE',
       templateHeader: TMPL_CACHE_HEADER
