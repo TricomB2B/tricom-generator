@@ -25,6 +25,9 @@ var tmplDest   = './src/js';
 var fontDest   = './dist/fonts';
 var vendorDest = './dist/vendors';
 
+// constants
+var TMPL_CACHE_HEADER = '\n// generated file. do not modify.\nangular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {';
+
 // plugins
 var gulp      = require('gulp'),
   browserSync = require('browser-sync').create(),
@@ -120,7 +123,8 @@ gulp.task('views', function() {
     .pipe($.angularTemplatecache({
       module: 'tcomTemplates',
       standalone: true,
-      moduleSystem: 'IIFE'
+      moduleSystem: 'IIFE',
+      templateHeader: TMPL_CACHE_HEADER
     }))
     .pipe(gulp.dest(tmplDest));
 });
