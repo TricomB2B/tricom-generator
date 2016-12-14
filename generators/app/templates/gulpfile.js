@@ -160,30 +160,31 @@ gulp.task('tests', function(done) {
 
 // default task builds everything, opens up a proxy server, and watches for changes
 gulp.task('default', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
   'fonts',
-  'views',
   'browser-sync-standalone',
   'watch'
 ]);
 
 // local task builds everything, opens up a standalone server, and watches for changes
 gulp.task('proxy', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
-  'fonts',
-  'views',
   'browser-sync-proxy',
   'watch'
 ]);
 
 // builds everything
 gulp.task('build', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
-  'fonts',
-  'views',
   'css-vendors',
   'js-vendors'
 ]);
