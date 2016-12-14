@@ -21,12 +21,15 @@ var cssVendors = [];
 // distribution directories
 var jsDest     = './dist/js';
 var cssDest    = './dist/css';
-var htmlDest   = './dist/html';
+var tmplDest   = './src/js';
 var fontDest   = './dist/fonts';
 var vendorDest = './dist/vendors';
 
+// constants
+var TMPL_CACHE_HEADER = '\n// generated file. do not modify.\nangular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {';
+
 // plugins
-var gulp        = require('gulp'),
+var gulp      = require('gulp'),
   browserSync = require('browser-sync').create(),
   reporters   = require('jasmine-reporters'),
   karma       = require('karma').server;
@@ -116,8 +119,15 @@ gulp.task('fonts', function() {
 gulp.task('views', function() {
   gulp.src(htmlFiles)
     .pipe($.htmlmin({collapseWhitespace: true}))
-    .pipe($.rename({dirname: '/', suffix: '.min'}))
-    .pipe(gulp.dest(htmlDest));
+    .pipe($.rename({dirname: '/'}))
+    .pipe($.angularTemplatecache({
+      filename: 'views.js',
+      module: 'tcomViews',
+      standalone: true,
+      moduleSystem: 'IIFE',
+      templateHeader: TMPL_CACHE_HEADER
+    }))
+    .pipe(gulp.dest(tmplDest));
 });
 
 // copy vendor CSS
@@ -155,30 +165,31 @@ gulp.task('tests', function(done) {
 
 // default task builds everything, opens up a proxy server, and watches for changes
 gulp.task('default', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
   'fonts',
-  'views',
   'browser-sync-standalone',
   'watch'
 ]);
 
 // local task builds everything, opens up a standalone server, and watches for changes
 gulp.task('proxy', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
-  'fonts',
-  'views',
   'browser-sync-proxy',
   'watch'
 ]);
 
 // builds everything
 gulp.task('build', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
-  'fonts',
-  'views',
   'css-vendors',
   'js-vendors'
 ]);
