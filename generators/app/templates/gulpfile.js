@@ -21,12 +21,12 @@ var cssVendors = [];
 // distribution directories
 var jsDest     = './dist/js';
 var cssDest    = './dist/css';
-var htmlDest   = './dist/html';
+var tmplDest   = './src/js';
 var fontDest   = './dist/fonts';
 var vendorDest = './dist/vendors';
 
 // plugins
-var gulp        = require('gulp'),
+var gulp      = require('gulp'),
   browserSync = require('browser-sync').create(),
   reporters   = require('jasmine-reporters'),
   karma       = require('karma').server;
@@ -116,8 +116,13 @@ gulp.task('fonts', function() {
 gulp.task('views', function() {
   gulp.src(htmlFiles)
     .pipe($.htmlmin({collapseWhitespace: true}))
-    .pipe($.rename({dirname: '/', suffix: '.min'}))
-    .pipe(gulp.dest(htmlDest));
+    .pipe($.rename({dirname: '/'}))
+    .pipe($.angularTemplatecache({
+      module: 'tcomTemplates',
+      standalone: true,
+      moduleSystem: 'IIFE'
+    }))
+    .pipe(gulp.dest(tmplDest));
 });
 
 // copy vendor CSS

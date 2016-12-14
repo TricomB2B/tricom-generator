@@ -15,6 +15,7 @@
     "bourbon-neat": "^1.8.0",
     "browser-sync": "^2.13.0",
     "gulp": "^3.9.1",
+    "gulp-angular-templatecache": "^2.0.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-babel": "^6.1.2",
     "gulp-clean-css": "^2.0.11",
