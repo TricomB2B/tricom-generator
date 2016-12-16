@@ -38,37 +38,42 @@ module.exports = yeoman.Base.extend({
 	},
 	writing: function () {
 
-		var properties = {
-			name: this.props.name,
-			description: this.props.description,
-			lowerCase: this.props.name.toLowerCase(),
-			camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
-				return match.slice(match.length-1, match.length).toUpperCase();
-			}).replace(/[^A-Za-z0-9]+$/, ""),
-			controllerAs: this.props.name.toLowerCase().slice(0, 3),
-			attribute: this.props.attribute,
-			element: this.props.element,
-			urlSafe: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, '-').replace(/[^A-Za-z0-9]+$/, ""),
-			isolateScope: this.props.isolateScope,
-			prefix: this.config.get('prefix') ? this.config.get('prefix') : 'app'
-		};
+		var gen = this,
+			properties = {
+				name: this.props.name,
+				description: this.props.description,
+				lowerCase: this.props.name.toLowerCase(),
+				camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
+					return match.slice(match.length-1, match.length).toUpperCase();
+				}).replace(/[^A-Za-z0-9]+$/, ""),
+				controllerAs: this.props.name.toLowerCase().slice(0, 3),
+				attribute: this.props.attribute,
+				element: this.props.element,
+				urlSafe: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, '-').replace(/[^A-Za-z0-9]+$/, ""),
+				isolateScope: this.props.isolateScope,
+				prefix: this.config.get('prefix') ? this.config.get('prefix') : 'app'
+			};
+
+		function getTemplate(template){
+			return gen.templatePath(`../../../templates/${template}`);
+		}
 
 		if(properties.element) {
 
 			this.fs.copyTpl(
-				this.templatePath('directive/directive.js'),
+				getTemplate('directive/directive.js'),
 				this.destinationPath('src/directives/' + properties.prefix + '-' + properties.urlSafe + '/' + properties.prefix + '-' + properties.urlSafe + '.directive.js'),
 				properties
 			);
 
 			this.fs.copyTpl(
-				this.templatePath('directive/directive.html'),
+				getTemplate('directive/directive.html'),
 				this.destinationPath('src/directives/' + properties.prefix + '-' + properties.urlSafe + '/' + properties.prefix + '-' + properties.urlSafe + '.html'),
 				properties
 			);
 
 			this.fs.copyTpl(
-				this.templatePath('directive/directive.scss'),
+				getTemplate('directive/directive.scss'),
 				this.destinationPath('src/directives/' + properties.prefix + '-' + properties.urlSafe + '/' + properties.prefix + '-' + properties.urlSafe + '.scss'),
 				properties
 			);
@@ -76,8 +81,8 @@ module.exports = yeoman.Base.extend({
 		}else{
 
 			this.fs.copyTpl(
-				this.templatePath('directiveAttribute/directive.js'),
-				this.destinationPath('src/directives/' + properties.prefix + '-' + properties.urlSafe + '/' + properties.prefix + '-' + properties.urlSafe + '.directive.js'),
+				getTemplate('directiveAttribute/directive.js'),
+				this.destinationPath(`src/directives/${properties.prefix}-${properties.urlSafe}/${properties.prefix}-${properties.urlSafe}.directive.js`),
 				properties
 			);
 
@@ -96,9 +101,35 @@ module.exports = yeoman.Base.extend({
 			});
 		});
 
+		// matches module('app', [
+		//	'test',
+		// 	'tester2'
+		// ]);
+
+		// \.module\('app', \[(\n\s.+)+\]\)
+
+		// [
+		//	'test',
+		// 	'tester2'
+		// ]
+
+		// \[(\n\s.+)+\]
+
+		fs.readFile(yet.destinationPath('src/scss/styling/_components.scss'), 'utf-8', function(err, data){
+			if (err) yet.log(err);
+
+			var newValue = data.replace(/(\/\/!!D!!\/\/)/, '@import "../../directives/'+properties.prefix + '-' + properties.urlSafe + '/'+properties.prefix + '-' + properties.urlSafe + '; \n//!!D!!//');
+
+			fs.writeFile(yet.destinationPath('src/scss/styling/_components.scss'), newValue, 'utf-8', function (err) {
+				if (err) yet.log(err);
+				yet.log('Injected styling into components file');
+			});
+		});
+
 	},
 	install: function () {
 		this.log(chalk.green('Your directive is ready'));
+		this.spawnCommand('gulp', ['watch']);
 	}
 
 });

@@ -42,13 +42,17 @@ module.exports = yeoman.Base.extend({
 	},
 	writing: function () {
 
-		var properties = {
-			name: this.props.name,
-			description: this.props.description,
-			primaryColor: this.props.primaryColor,
-			prefix: this.props.prefix.toLowerCase(),
-			prefixedName: this.props.prefix.toLowerCase()+'-'
-		};
+		var gen = this,
+			getTemplate = function(template){
+				return gen.templatePath(`../../../templates/${template}`);
+			},
+			properties = {
+				name: this.props.name,
+				description: this.props.description,
+				primaryColor: this.props.primaryColor,
+				prefix: this.props.prefix.toLowerCase(),
+				prefixedName: this.props.prefix.toLowerCase()+'-'
+			};
 
 		mkdirp.sync(this.destinationPath('img'));
 		mkdirp.sync(this.destinationPath('src/scss/'));
@@ -59,40 +63,40 @@ module.exports = yeoman.Base.extend({
 		mkdirp.sync(this.destinationPath('src/views/Home'));
 		mkdirp.sync(this.destinationPath('src/js'));
 
-		this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('img/.gitkeep'));
-		this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/directives/.gitkeep'));
-		this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/factories/.gitkeep'));
-		this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/filters/.gitkeep'));
-		this.fs.copy(this.templatePath('.gitkeep'), this.destinationPath('src/views/.gitkeep'));
-		this.fs.copy(this.templatePath('js/helpers.js'), this.destinationPath('src/js/helpers.js'));
-		this.fs.copy(this.templatePath('js/modernizr.js'), this.destinationPath('src/js/modernizr.js'));
-		this.fs.copy(this.templatePath('view/view.html'), this.destinationPath('src/views/Home/Home.html'));
-		this.fs.copy(this.templatePath('view/view.js'), this.destinationPath('src/views/Home/Home.js'));
-		this.fs.copy(this.templatePath('view/view.scss'), this.destinationPath('src/views/Home/Home.scss'));
+		this.fs.copy(getTemplate('.gitkeep'), this.destinationPath('img/.gitkeep'));
+		this.fs.copy(getTemplate('.gitkeep'), this.destinationPath('src/directives/.gitkeep'));
+		this.fs.copy(getTemplate('.gitkeep'), this.destinationPath('src/factories/.gitkeep'));
+		this.fs.copy(getTemplate('.gitkeep'), this.destinationPath('src/filters/.gitkeep'));
+		this.fs.copy(getTemplate('.gitkeep'), this.destinationPath('src/views/.gitkeep'));
+		this.fs.copy(getTemplate('js/helpers.js'), this.destinationPath('src/js/helpers.js'));
+		this.fs.copy(getTemplate('js/modernizr.js'), this.destinationPath('src/js/modernizr.js'));
+		this.fs.copy(getTemplate('view/view.html'), this.destinationPath('src/views/Home/Home.html'));
+		this.fs.copy(getTemplate('view/view.js'), this.destinationPath('src/views/Home/Home.js'));
+		this.fs.copy(getTemplate('view/view.scss'), this.destinationPath('src/views/Home/Home.scss'));
 
-		this.directory('scss', 'src/scss/');
+		this.directory(getTemplate('scss'), this.destinationPath('src/scss/'));
 
-		this.fs.copy(this.templatePath('.htaccess'), this.destinationPath('.htaccess'));
-		this.fs.copy(this.templatePath('editorconfig.txt'), this.destinationPath('.editorconfig'));
-		this.fs.copy(this.templatePath('data.json'), this.destinationPath('data.json'));
-		this.fs.copy(this.templatePath('gulpfile.js'), this.destinationPath('gulpfile.js'));
-		this.fs.copy(this.templatePath('readme.md'), this.destinationPath('readme.md'));
-		this.fs.copy(this.templatePath('js/data-factory.js'), this.destinationPath('src/factories/'+properties.prefixedName+'data/'+properties.prefixedName+'data.factory.js'));
+		this.fs.copy(getTemplate('.htaccess'), this.destinationPath('.htaccess'));
+		this.fs.copy(getTemplate('editorconfig.txt'), this.destinationPath('.editorconfig'));
+		this.fs.copy(getTemplate('data.json'), this.destinationPath('data.json'));
+		this.fs.copy(getTemplate('gulpfile.js'), this.destinationPath('gulpfile.js'));
+		this.fs.copy(getTemplate('readme.md'), this.destinationPath('readme.md'));
+		this.fs.copy(getTemplate('js/data-factory.js'), this.destinationPath('src/factories/'+properties.prefixedName+'data/'+properties.prefixedName+'data.factory.js'));
 
-		this.fs.copy(this.templatePath('gitignore.txt'), this.destinationPath('.gitignore'));
+		this.fs.copy(getTemplate('gitignore.txt'), this.destinationPath('.gitignore'));
 
 		this.fs.copyTpl(
-			this.templatePath('index.html'),
+			getTemplate('index.html'),
 			this.destinationPath('index.html'),
 			properties
 		);
 		this.fs.copyTpl(
-			this.templatePath('js/app.js'),
+			getTemplate('js/app.js'),
 			this.destinationPath('src/js/app.js'),
 			properties
 		);
 		this.fs.copyTpl(
-			this.templatePath('package.json'),
+			getTemplate('package.json'),
 			this.destinationPath('package.json'),
 			properties
 		);

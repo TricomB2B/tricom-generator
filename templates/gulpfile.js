@@ -27,9 +27,9 @@ var vendorDest = './dist/vendors';
 
 // plugins
 var gulp        = require('gulp'),
-  browserSync = require('browser-sync').create(),
-  reporters   = require('jasmine-reporters'),
-  karma       = require('karma').server;
+    browserSync = require('browser-sync').create(),
+    reporters   = require('jasmine-reporters'),
+    karma       = require('karma').server;
 
 // set up gulp-specific plugins
 $ = require('gulp-load-plugins')({
@@ -61,77 +61,77 @@ gulp.task('browser-sync-standalone', function () {
 // Lint Javascript Task
 gulp.task('lint', function() {
   return gulp.src(jsFiles)
-    .pipe($.jshint({esversion: 6}))
-    .pipe($.jshint.reporter('jshint-stylish'));
+      .pipe($.jshint({esversion: 6}))
+      .pipe($.jshint.reporter('jshint-stylish'));
 });
 
 // Concatenate & Minify JS
 gulp.task('scripts', ['lint'], function() {
   return gulp.src(jsFiles)
-    .pipe($.plumber())
-    .pipe($.ngAnnotate())
-    .pipe($.sourcemaps.init())
-    .pipe($.concat('app.js'))
-    .pipe($.babel({
-      presets: ['es2015']
-    }))
-    .pipe(gulp.dest(jsDest))
-    .pipe($.rename({suffix: '.min'}))
-    .pipe($.uglify())
-    .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest(jsDest))
-    .pipe(browserSync.stream());
+      .pipe($.plumber())
+      .pipe($.ngAnnotate())
+      .pipe($.sourcemaps.init())
+      .pipe($.concat('app.js'))
+      .pipe($.babel({
+        presets: ['es2015']
+      }))
+      .pipe(gulp.dest(jsDest))
+      .pipe($.rename({suffix: '.min'}))
+      .pipe($.uglify())
+      .pipe($.sourcemaps.write('.'))
+      .pipe(gulp.dest(jsDest))
+      .pipe(browserSync.stream());
 });
 
 // compile, prefix, and minify the sass
 gulp.task('styles', function() {
   return gulp.src(coreScss)
-    .pipe($.sourcemaps.init())
-    .pipe($.sass().on('error', $.sass.logError))
-    .pipe($.autoprefixer(["> 1%", "last 2 versions"], { cascade: true }))
-    .pipe(gulp.dest(cssDest))
-    .pipe($.rename({suffix: '.min'}))
-    .pipe($.cleanCss())
-    .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest(cssDest))
-    .pipe(browserSync.stream({match: '**/*.css'}));
+      .pipe($.sourcemaps.init())
+      .pipe($.sass().on('error', $.sass.logError))
+      .pipe($.autoprefixer(["> 1%", "last 2 versions"], { cascade: true }))
+      .pipe(gulp.dest(cssDest))
+      .pipe($.rename({suffix: '.min'}))
+      .pipe($.cleanCss())
+      .pipe($.sourcemaps.write('.'))
+      .pipe(gulp.dest(cssDest))
+      .pipe(browserSync.stream({match: '**/*.css'}));
 });
 
 // Concatenate and Minify Vendor JS
 gulp.task('js-vendors', function() {
   return gulp.src(jsVendors)
-    .pipe($.plumber())
-    .pipe($.concat('vendors.min.js'))
-    .pipe($.uglify())
-    .pipe(gulp.dest(vendorDest));
+      .pipe($.plumber())
+      .pipe($.concat('vendors.min.js'))
+      .pipe($.uglify())
+      .pipe(gulp.dest(vendorDest));
 });
 
 // copy fonts
 gulp.task('fonts', function() {
   gulp.src(fontFiles)
-    .pipe(gulp.dest(fontDest));
+      .pipe(gulp.dest(fontDest));
 });
 
 // copy views
 gulp.task('views', function() {
   gulp.src(htmlFiles)
-    .pipe($.htmlmin({collapseWhitespace: true}))
-    .pipe($.rename({dirname: '/', suffix: '.min'}))
-    .pipe(gulp.dest(htmlDest));
+      .pipe($.htmlmin({collapseWhitespace: true}))
+      .pipe($.rename({dirname: '/', suffix: '.min'}))
+      .pipe(gulp.dest(htmlDest));
 });
 
 // copy vendor CSS
 gulp.task('css-vendors', function () {
   return gulp.src(cssVendors)
-    .pipe(gulp.dest(vendorDest));
+      .pipe(gulp.dest(vendorDest));
 });
 
 // compress and combine svg icons
 gulp.task('svg', function () {
   return gulp.src('./img/icons/*.svg')
-    .pipe($.svgmin())
-    .pipe($.svgstore())
-    .pipe(gulp.dest('./img/icons'));
+      .pipe($.svgmin())
+      .pipe($.svgstore())
+      .pipe(gulp.dest('./img/icons'));
 });
 
 // Watch Files For Changes

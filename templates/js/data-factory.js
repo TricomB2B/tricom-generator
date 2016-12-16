@@ -18,7 +18,7 @@
 		var data = {};
 
 		var factory = {
-			initialize: initialize
+			initialize: initialize,
 
 			//!!FC!!//
 			// DO NOT REMOVE IF USING GENERATOR //

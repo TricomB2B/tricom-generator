@@ -39,18 +39,22 @@ module.exports = yeoman.Base.extend({
 	},
 	writing: function () {
 
-		var properties = {
-			name: this.props.name,
-			description: this.props.description,
-			url: this.props.url,
-			state: this.props.state,
-			lowerCase: this.props.name.toLowerCase(),
-			camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
-				return match.slice(match.length-1, match.length).toUpperCase();
-			}).replace(/[^A-Za-z0-9]+$/, ""),
-			controllerAs: this.props.name.toLowerCase().slice(0, 3),
-			params: []
-		};
+		var gen = this,
+			getTemplate = function(template){
+				return gen.templatePath(`../../../templates/${template}`);
+			},
+			properties = {
+				name: this.props.name,
+				description: this.props.description,
+				url: this.props.url,
+				state: this.props.state,
+				lowerCase: this.props.name.toLowerCase(),
+				camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
+					return match.slice(match.length-1, match.length).toUpperCase();
+				}).replace(/[^A-Za-z0-9]+$/, ""),
+				controllerAs: this.props.name.toLowerCase().slice(0, 3),
+				params: []
+			};
 
 		if(this.props.stateParams){
 			var matches = properties.url.match(/:[A-Za-z0-9]+/g);
@@ -68,25 +72,25 @@ module.exports = yeoman.Base.extend({
 		//this.log('prefix: ' + generator.config.get('prefix'));
 
 		this.fs.copyTpl(
-			this.templatePath('view/view.html'),
+			getTemplate('views/view.html'),
 			this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.html'),
 			properties
 		);
 		this.fs.copyTpl(
-			this.templatePath('view/view.scss'),
+			getTemplate('views/view.scss'),
 			this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.scss'),
 			properties
 		);
 
 		if(this.props.stateParams){
 			this.fs.copyTpl(
-				this.templatePath('viewParam/view.js'),
+				getTemplate('viewParam/view.js'),
 				this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.js'),
 				properties
 			);
 		}else{
 			this.fs.copyTpl(
-				this.templatePath('view/view.js'),
+				getTemplate('views/view.js'),
 				this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.js'),
 				properties
 			);
@@ -105,9 +109,21 @@ module.exports = yeoman.Base.extend({
 			});
 		});
 
+		fs.readFile(yet.destinationPath('src/scss/styling/_views.scss'), 'utf-8', function(err, data){
+			if (err) yet.log(err);
+
+			var newValue = data.replace(/(\/\/!!V!!\/\/)/, '@import "../../views/'+properties.camelCase+'/'+properties.camelCase+'; \n//!!V!!//');
+
+			fs.writeFile(yet.destinationPath('src/scss/styling/_views.scss'), newValue, 'utf-8', function (err) {
+				if (err) yet.log(err);
+				yet.log('Injected styling into views file');
+			});
+		});
+
 	},
 	install: function () {
 		this.log(chalk.green('Your view is ready'));
+		gen.spawnCommand('gulp', ['watch']);
 	}
 
 });

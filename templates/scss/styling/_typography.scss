@@ -49,14 +49,14 @@ p, small, h1, h2, h3, h4, h5, h6, li, button, svg text {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: Helvetica, sans-serif;
+  font-family: $header-font-family;
   color: inherit;
   margin-top: 0;
   margin-bottom: 0;
 }
 
-p, li  {
-  font-family: "Open Sans";
+p, li, div  {
+  font-family: $body-font-family;
   @include font-size(16);
 }
 
@@ -65,7 +65,7 @@ p {
 }
 
 small {
-  font-family: "Open Sans";
+  font-family: $body-font-family;
   @include font-size(12);
 }
 

@@ -26,18 +26,22 @@ module.exports = yeoman.Base.extend({
   },
   writing: function () {
 
-    var properties = {
-      description: this.props.description,
-      lowerCase: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, ''),
-      camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
-        return match.slice(match.length-1, match.length).toUpperCase();
-      }).replace(/[^A-Za-z0-9]+$/, ""),
-      urlSafe: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, '-').replace(/[^A-Za-z0-9]+$/, ""),
-      prefix: this.config.get('prefix') ? this.config.get('prefix') + '-' : 'app' +'-'
-    };
+    var gen = this,
+        getTemplate = function(template){
+            return gen.templatePath(`../../../templates/${template}`);
+        },
+        properties = {
+            description: this.props.description,
+            lowerCase: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, ''),
+            camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
+            return match.slice(match.length-1, match.length).toUpperCase();
+            }).replace(/[^A-Za-z0-9]+$/, ""),
+            urlSafe: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, '-').replace(/[^A-Za-z0-9]+$/, ""),
+            prefix: this.config.get('prefix') ? this.config.get('prefix') + '-' : 'app' +'-'
+        };
 
     this.fs.copyTpl(
-      this.templatePath('factory.js'),
+      getTemplate('factory.js'),
       this.destinationPath('src/factories/'+ properties.prefix + properties.urlSafe +'/'+ properties.prefix + properties.urlSafe +'.factory.js'),
       properties
     );
