@@ -9,6 +9,7 @@ var jsFiles   = ['src/**/*.js'];
 var scssFiles = ['src/**/*.scss'];
 var htmlFiles = ['src/**/*.html'];
 var fontFiles = []; // add font files here
+var imgFiles  = ['src/img/**/*.jpg'];
 
 // vendor files
 var jsVendors = [
@@ -24,9 +25,11 @@ var cssDest    = './dist/css';
 var tmplDest   = './src/js';
 var fontDest   = './dist/fonts';
 var vendorDest = './dist/vendors';
+var imgDest    = './dist/img';
 
 // constants
 var TMPL_CACHE_HEADER = '\n// generated file. do not modify.\nangular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {';
+var TINYPNG_KEY       = '';
 
 // plugins
 var gulp      = require('gulp'),
@@ -142,6 +145,16 @@ gulp.task('svg', function () {
     .pipe($.svgmin())
     .pipe($.svgstore())
     .pipe(gulp.dest('./img/icons'));
+});
+
+// compress png and jpg images via tinypng API
+gulp.task('tinypng', function () {
+  return gulp.src(imgFiles)
+    .pipe($.tinypngCompress({
+      key: TINYPNG_KEY,
+      sigFile: './dist/img/.tinypng-sigs'
+    }))
+    .pipe(gulp.dest(imgDest));
 });
 
 // Watch Files For Changes
