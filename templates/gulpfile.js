@@ -9,6 +9,7 @@ var jsFiles   = ['src/**/*.js'];
 var scssFiles = ['src/**/*.scss'];
 var htmlFiles = ['src/**/*.html'];
 var fontFiles = []; // add font files here
+var imgFiles  = ['src/img/**/*.jpg'];
 
 // vendor files
 var jsVendors = [
@@ -21,9 +22,14 @@ var cssVendors = [];
 // distribution directories
 var jsDest     = './dist/js';
 var cssDest    = './dist/css';
-var htmlDest   = './dist/html';
+var tmplDest   = './src/js';
 var fontDest   = './dist/fonts';
 var vendorDest = './dist/vendors';
+var imgDest    = './dist/img';
+
+// constants
+var TMPL_CACHE_HEADER = '\n// generated file. do not modify.\nangular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {';
+var TINYPNG_KEY       = '';
 
 // plugins
 var gulp        = require('gulp'),
@@ -115,9 +121,16 @@ gulp.task('fonts', function() {
 // copy views
 gulp.task('views', function() {
   gulp.src(htmlFiles)
-      .pipe($.htmlmin({collapseWhitespace: true}))
-      .pipe($.rename({dirname: '/', suffix: '.min'}))
-      .pipe(gulp.dest(htmlDest));
+    .pipe($.htmlmin({collapseWhitespace: true}))
+    .pipe($.rename({dirname: '/'}))
+    .pipe($.angularTemplatecache({
+      filename: 'views.js',
+      module: 'tcomViews',
+      standalone: true,
+      moduleSystem: 'IIFE',
+      templateHeader: TMPL_CACHE_HEADER
+    }))
+    .pipe(gulp.dest(tmplDest));
 });
 
 // copy vendor CSS
@@ -132,6 +145,16 @@ gulp.task('svg', function () {
       .pipe($.svgmin())
       .pipe($.svgstore())
       .pipe(gulp.dest('./img/icons'));
+});
+
+// compress png and jpg images via tinypng API
+gulp.task('tinypng', function () {
+  return gulp.src(imgFiles)
+    .pipe($.tinypngCompress({
+      key: TINYPNG_KEY,
+      sigFile: './dist/img/.tinypng-sigs'
+    }))
+    .pipe(gulp.dest(imgDest));
 });
 
 // Watch Files For Changes
@@ -155,30 +178,31 @@ gulp.task('tests', function(done) {
 
 // default task builds everything, opens up a proxy server, and watches for changes
 gulp.task('default', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
   'fonts',
-  'views',
   'browser-sync-standalone',
   'watch'
 ]);
 
 // local task builds everything, opens up a standalone server, and watches for changes
 gulp.task('proxy', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
-  'fonts',
-  'views',
   'browser-sync-proxy',
   'watch'
 ]);
 
 // builds everything
 gulp.task('build', [
+	'views',
+	'fonts',
   'styles',
   'scripts',
-  'fonts',
-  'views',
   'css-vendors',
   'js-vendors'
 ]);

@@ -5,6 +5,7 @@
 		.module('<%= prefix %>', [
 			'ngResource',
 			'ui.router',
+			'tcomViews',
 			'DataFactory',
 			'HomeView',
 			// enter additional modules/components here
