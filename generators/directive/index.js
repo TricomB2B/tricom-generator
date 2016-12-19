@@ -28,6 +28,11 @@ module.exports = yeoman.Base.extend({
 			type: 'confirm',
 			name: 'isolateScope',
 			message: 'Isolate Scope?'
+		},{
+			type: 'input',
+			name: 'controllerAs',
+			message: 'Controller name?',
+			default: 'vm'
 		}];
 
 		return this.prompt(prompts).then(function (props) {
@@ -46,7 +51,6 @@ module.exports = yeoman.Base.extend({
 				camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
 					return match.slice(match.length-1, match.length).toUpperCase();
 				}).replace(/[^A-Za-z0-9]+$/, ""),
-				controllerAs: this.props.name.toLowerCase().slice(0, 3),
 				attribute: this.props.attribute,
 				element: this.props.element,
 				urlSafe: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, '-').replace(/[^A-Za-z0-9]+$/, ""),
@@ -118,7 +122,7 @@ module.exports = yeoman.Base.extend({
 		fs.readFile(yet.destinationPath('src/scss/styling/_components.scss'), 'utf-8', function(err, data){
 			if (err) yet.log(err);
 
-			var newValue = data.replace(/(\/\/!!D!!\/\/)/, '@import "../../directives/'+properties.prefix + '-' + properties.urlSafe + '/'+properties.prefix + '-' + properties.urlSafe + '; \n//!!D!!//');
+			var newValue = data.replace(/(\/\/!!D!!\/\/)/, '@import "../../directives/'+properties.prefix + '-' + properties.urlSafe + '/'+properties.prefix + '-' + properties.urlSafe + '"; \n//!!D!!//');
 
 			fs.writeFile(yet.destinationPath('src/scss/styling/_components.scss'), newValue, 'utf-8', function (err) {
 				if (err) yet.log(err);

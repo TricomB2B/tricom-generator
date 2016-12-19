@@ -59,7 +59,7 @@ module.exports = yeoman.Base.extend({
 		if(this.props.stateParams){
 			var matches = properties.url.match(/:[A-Za-z0-9]+/g);
 
-			if(matches.length > 0){
+			if(matches && matches.length > 0){
 				this.log(matches);
 				for(var i = 0; i < matches.length; i++){
 					var text = matches[i].replace(/:/, '');

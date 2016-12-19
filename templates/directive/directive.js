@@ -18,7 +18,7 @@
             restrict: '<%= attribute ? "AEC" : "E" %>',
             templateUrl: getTemplateUrl('<%= prefix %>-<%= urlSafe %>'),
             controller: <%= camelCase %>Ctrl,
-            controllerAs: '<%= controllerAs %>'
+            controllerAs: '<%= controllerAs %>',
             <%= isolateScope ? 'scope: {}' : '' %>
         };
     }
