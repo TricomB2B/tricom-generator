@@ -53,6 +53,7 @@ module.exports = yeoman.Base.extend({
 				}).replace(/[^A-Za-z0-9]+$/, ""),
 				attribute: this.props.attribute,
 				element: this.props.element,
+				controllerAs: this.props.controllerAs,
 				urlSafe: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, '-').replace(/[^A-Za-z0-9]+$/, ""),
 				isolateScope: this.props.isolateScope,
 				prefix: this.config.get('prefix') ? this.config.get('prefix') : 'app'
