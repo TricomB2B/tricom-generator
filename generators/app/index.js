@@ -104,7 +104,9 @@ module.exports = yeoman.Base.extend({
 	install: function () {
 		var gen = this;
 		this.installDependencies({
-			bower:false,
+            npm: false,
+            bower: false,
+            yarn: true,
 			callback: function () {
 				gen.log(chalk.green('Your app is ready. Build something awesome!'));
 				gen.spawnCommand('gulp', ['vendors']);
