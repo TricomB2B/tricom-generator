@@ -106,13 +106,18 @@ module.exports = yeoman.Base.extend({
 			});
 		});
 
-		// matches module('app', [
+		// matches
+		//
+		// module('app', [
 		//	'test',
 		// 	'tester2'
 		// ]);
-
+		//
 		// \.module\('app', \[(\n\s.+)+\]\)
 
+
+        // matches
+        //
 		// [
 		//	'test',
 		// 	'tester2'
