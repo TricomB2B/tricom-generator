@@ -1,6 +1,6 @@
 {
   "name": "generator-tricom",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Generator for TricomB2B's hybrid app platform",
   "homepage": "https://github.com/TricomB2B/ng-boilerplate",
   "author": {
