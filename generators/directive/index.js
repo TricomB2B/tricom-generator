@@ -2,7 +2,10 @@
 var yeoman = require('yeoman-generator'),
 	chalk = require('chalk'),
 	yosay = require('yosay'),
-	fs = require('fs');
+	fs = require('fs'),
+	_ = require('underscore'),
+	prima = require('esprima'),
+	escodegen = require('escodegen');
 
 module.exports = yeoman.Base.extend({
 	prompting: function () {
@@ -96,11 +99,26 @@ module.exports = yeoman.Base.extend({
 		var yet = this;
 
 		fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
+
+			var main = prima.parse(data);
+			var chk = main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements;
+
+			chk.push({
+                type: 'Literal',
+                value: properties.prefix + properties.camelCase,
+                raw: '\''+properties.prefix + properties.camelCase+'\''
+			});
+
+			var newArr = _.sortBy(chk, 'value');
+            main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements = newArr;
+            var final = escodegen.generate(main);
+            console.log(final);
+
 			if (err) yet.log(err);
 
-			var newValue = data.replace(/(\/\/!!D!!\/\/)/, '\''+properties.prefix + properties.camelCase+'Directive\', \n\t\t\t//!!D!!//');
+			// var newValue = data.replace(/(\/\/!!D!!\/\/)/, '\''+properties.prefix + properties.camelCase+'Directive\', \n\t\t\t//!!D!!//');
 
-			fs.writeFile(yet.destinationPath('src/js/app.js'), newValue, 'utf-8', function (err) {
+			fs.writeFile(yet.destinationPath('src/js/app.js'), final, 'utf-8', function (err) {
 				if (err) yet.log(err);
 				yet.log('Updated module dependencies')
 			});
