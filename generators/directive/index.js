@@ -1,11 +1,12 @@
 'use strict';
-var yeoman = require('yeoman-generator'),
-	chalk = require('chalk'),
-	yosay = require('yosay'),
-	fs = require('fs');
 
-module.exports = yeoman.Base.extend({
-	prompting: function () {
+var Generator = require('yeoman-generator'),
+		chalk     = require('chalk'),
+		yosay     = require('yosay'),
+		fs        = require('fs');
+
+module.exports = class extends Generator {
+	prompting () {
 
 		var prompts = [{
 			type: 'input',
@@ -40,8 +41,9 @@ module.exports = yeoman.Base.extend({
 			this.props = props;
 
 		}.bind(this));
-	},
-	writing: function () {
+	}
+
+	writing () {
 
 		var gen = this,
 			properties = {
@@ -136,10 +138,10 @@ module.exports = yeoman.Base.extend({
 			});
 		});
 
-	},
-	install: function () {
-		this.log(chalk.green('Your directive is ready'));
-		this.spawnCommand('gulp', ['watch']);
 	}
 
-});
+	install () {
+		this.log(chalk.green('Your directive is ready'));
+	}
+
+}

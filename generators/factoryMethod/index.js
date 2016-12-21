@@ -1,11 +1,12 @@
 'use strict';
-var yeoman = require('yeoman-generator'),
-	chalk = require('chalk'),
-	yosay = require('yosay'),
-	fs = require('fs');
 
-module.exports = yeoman.Base.extend({
-	prompting: function () {
+var Generator = require('yeoman-generator'),
+		chalk     = require('chalk'),
+		yosay     = require('yosay'),
+		fs        = require('fs');
+
+module.exports = class extends Generator {
+	prompting () {
 
 		var prompts = [{
 			type: 'input',
@@ -26,8 +27,9 @@ module.exports = yeoman.Base.extend({
 			this.props = props;
 
 		}.bind(this));
-	},
-	writing: function () {
+	}
+
+	writing () {
 
 		var properties = {
 			description: this.props.methodDescription,
@@ -67,12 +69,13 @@ module.exports = yeoman.Base.extend({
 
 		this.props.props = properties;
 
-	},
-	install: function () {
+	}
+
+	install () {
 		if (this.factoryFound)
 			this.log(chalk.green('Factory '+this.props.props.fileName+' updated!'));
 		else
 			this.log(chalk.red('Factory '+this.props.props.fileName+' not found.'));
 	}
 
-});
+}

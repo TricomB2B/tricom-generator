@@ -1,14 +1,14 @@
 'use strict';
 
-var yeoman   = require('yeoman-generator'),
-		chalk    = require('chalk'),
-		yosay    = require('yosay'),
-		download = require('download-git-repo'),
-		path     = require('path'),
-		fs       = require('fs');
+var Generator = require('yeoman-generator'),
+		chalk     = require('chalk'),
+		yosay     = require('yosay'),
+		download  = require('download-git-repo'),
+		path      = require('path'),
+		fs        = require('fs');
 
-module.exports = yeoman.Base.extend({
-	prompting: function () {
+module.exports = class extends Generator {
+	prompting () {
 		var prompts = [{
 			type: 'input',
 			name: 'component',
@@ -24,9 +24,9 @@ module.exports = yeoman.Base.extend({
 			// To access props later use this.props.someAnswer;
 			this.props = props;
 		}.bind(this));
-	},
+	}
 
-	writing: function () {
+	writing () {
 		var repo = 'ngTricomB2B/' + this.props.component;
 		var dest = path.join('src', this.props.dir, this.props.component);
 
@@ -35,4 +35,4 @@ module.exports = yeoman.Base.extend({
 			console.log('success');
 		});
 	}
-});
+}

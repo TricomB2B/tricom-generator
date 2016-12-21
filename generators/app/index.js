@@ -122,4 +122,4 @@ module.exports = class extends Generator {
 		this.config.set('prefix', this.props.prefix.replace(/(\s|[^A-Za-z0-9])+/g, ''));
 		this.config.save();
 	}
-};
+}
