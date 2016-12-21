@@ -2,8 +2,8 @@
 
 var Generator = require('yeoman-generator'),
     chalk     = require('chalk'),
-  	yosay     = require('yosay'),
-  	fs        = require('fs');
+    yosay     = require('yosay'),
+    fs        = require('fs');
 
 module.exports = class extends Generator {
   prompting () {
@@ -65,7 +65,7 @@ module.exports = class extends Generator {
   }
 
   install () {
-	  this.log(chalk.green('Your Factory is ready'));
+    this.log(chalk.green('Your Factory is ready'));
   }
 
 }
