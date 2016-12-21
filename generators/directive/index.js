@@ -4,7 +4,7 @@ var yeoman = require('yeoman-generator'),
 	yosay = require('yosay'),
 	fs = require('fs'),
 	_ = require('underscore'),
-	prima = require('esprima'),
+	esprima = require('esprima'),
 	escodegen = require('escodegen');
 
 module.exports = yeoman.Base.extend({
@@ -61,6 +61,7 @@ module.exports = yeoman.Base.extend({
 				isolateScope: this.props.isolateScope,
 				prefix: this.config.get('prefix') ? this.config.get('prefix') : 'app'
 			};
+		properties.injectionName =  properties.prefix + properties.camelCase;
 
 		function getTemplate(template){
 			return gen.templatePath(`../../../templates/${template}`);
@@ -100,18 +101,43 @@ module.exports = yeoman.Base.extend({
 
 		fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
 
-			var main = prima.parse(data);
-			var chk = main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements;
+			var main = esprima.parse(data, {
+					range: true,
+					tokens: true,
+					comment: true,
+                    attachComment: true
+				}),
+				chk = main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements;
+
+			console.log(main);
+			console.log(main.comments);
+			console.log(main.tokens);
+
+			console.log(main);
 
 			chk.push({
-                type: 'Literal',
-                value: properties.prefix + properties.camelCase,
-                raw: '\''+properties.prefix + properties.camelCase+'\''
+				type: 'Literal',
+				value: properties.injectionName,
+				raw: '\''+properties.injectionName+'\''
 			});
+
+			// chk.push(escodegen.generate({
+			// 	type: 'Literal',
+			// 	value: properties.prefix + properties.camelCase,
+			// }));
 
 			var newArr = _.sortBy(chk, 'value');
             main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements = newArr;
-            var final = escodegen.generate(main);
+
+            // var main2 = escodegen.attachComments(main, main.comments, main.tokens);
+
+            console.log(main);
+            console.log(chk);
+            console.log(newArr);
+
+            var final = escodegen.generate(main, {
+            	comment: true,
+            });
             console.log(final);
 
 			if (err) yet.log(err);
