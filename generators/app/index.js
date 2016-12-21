@@ -1,11 +1,12 @@
 'use strict';
-var yeoman = require('yeoman-generator'),
-	chalk = require('chalk'),
-	yosay = require('yosay'),
-	mkdirp = require('mkdirp');
+var Generator = require('yeoman-generator'),
+		chalk     = require('chalk'),
+		yosay     = require('yosay'),
+		mkdirp    = require('mkdirp'),
+		copydir   = require('copy-dir');
 
-module.exports = yeoman.Base.extend({
-	prompting: function () {
+module.exports = class extends Generator {
+	prompting () {
 		// Have Yeoman greet the user.
 		this.log(yosay(
 			'Welcome to the ' + chalk.red('TricomB2B') + ' generator!'
@@ -39,8 +40,9 @@ module.exports = yeoman.Base.extend({
 			this.log(props);
 
 		}.bind(this));
-	},
-	writing: function () {
+	}
+
+	writing () {
 
 		var gen = this,
 			getTemplate = function(template){
@@ -74,7 +76,7 @@ module.exports = yeoman.Base.extend({
 		this.fs.copy(getTemplate('view/view.js'), this.destinationPath('src/views/Home/Home.js'));
 		this.fs.copy(getTemplate('view/view.scss'), this.destinationPath('src/views/Home/Home.scss'));
 
-		this.directory(getTemplate('scss'), this.destinationPath('src/scss/'));
+		copydir.sync(getTemplate('scss'), this.destinationPath('src/scss/'));
 
 		this.fs.copy(getTemplate('.htaccess'), this.destinationPath('.htaccess'));
 		this.fs.copy(getTemplate('editorconfig.txt'), this.destinationPath('.editorconfig'));
@@ -100,8 +102,9 @@ module.exports = yeoman.Base.extend({
 			this.destinationPath('package.json'),
 			properties
 		);
-	},
-	install: function () {
+	}
+
+	install () {
 		var gen = this;
 		this.installDependencies({
             npm: false,
@@ -113,11 +116,10 @@ module.exports = yeoman.Base.extend({
 				gen.spawnCommand('gulp');
 			}
 		});
-	},
-	config: function(){
+	}
 
+	config () {
 		this.config.set('prefix', this.props.prefix.replace(/(\s|[^A-Za-z0-9])+/g, ''));
 		this.config.save();
-
 	}
-});
+};
