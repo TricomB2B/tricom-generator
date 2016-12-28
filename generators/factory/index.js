@@ -1,11 +1,12 @@
 'use strict';
-var yeoman = require('yeoman-generator'),
-  chalk = require('chalk'),
-  yosay = require('yosay'),
-  fs = require('fs');
 
-module.exports = yeoman.Base.extend({
-  prompting: function () {
+var Generator = require('yeoman-generator'),
+    chalk     = require('chalk'),
+    yosay     = require('yosay'),
+    fs        = require('fs');
+
+module.exports = class extends Generator {
+  prompting () {
 
     var prompts = [{
       type: 'input',
@@ -23,8 +24,9 @@ module.exports = yeoman.Base.extend({
       this.props = props;
 
     }.bind(this));
-  },
-  writing: function () {
+  }
+
+  writing () {
 
     var gen = this,
         getTemplate = function(template){
@@ -41,7 +43,7 @@ module.exports = yeoman.Base.extend({
         };
 
     this.fs.copyTpl(
-      getTemplate('factory.js'),
+      getTemplate('factory/factory.js'),
       this.destinationPath('src/factories/'+ properties.prefix + properties.urlSafe +'/'+ properties.prefix + properties.urlSafe +'.factory.js'),
       properties
     );
@@ -60,9 +62,10 @@ module.exports = yeoman.Base.extend({
       });
     });
 
-  },
-  install: function () {
-	  this.log(chalk.green('Your Factory is ready'));
   }
 
-});
+  install () {
+    this.log(chalk.green('Your Factory is ready'));
+  }
+
+}
