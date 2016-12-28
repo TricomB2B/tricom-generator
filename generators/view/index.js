@@ -28,7 +28,12 @@ module.exports = yeoman.Base.extend({
 			type: 'input',
 			name: 'state',
 			message: 'View State'
-		}];
+		}, {
+            type: 'input',
+            name: 'controllerAs',
+            message: 'Controller Name?',
+            default: 'vm'
+        }];
 
 		return this.prompt(prompts).then(function (props) {
 			// To access props later use this.props.someAnswer;
@@ -52,7 +57,7 @@ module.exports = yeoman.Base.extend({
 				camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
 					return match.slice(match.length-1, match.length).toUpperCase();
 				}).replace(/[^A-Za-z0-9]+$/, ""),
-				controllerAs: this.props.name.toLowerCase().slice(0, 3),
+				controllerAs: this.props.controllerAs,
 				params: []
 			};
 
