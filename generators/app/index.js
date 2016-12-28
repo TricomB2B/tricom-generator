@@ -105,17 +105,16 @@ module.exports = class extends Generator {
   }
 
   install () {
-    var gen = this;
-    this.installDependencies({
-            npm: false,
-            bower: false,
-            yarn: true,
-      callback: function () {
-        gen.log(chalk.green('Your app is ready. Build something awesome!'));
-        gen.spawnCommand('gulp', ['vendors']);
-        gen.spawnCommand('gulp');
-      }
-    });
+    this.yarnInstall();
+  }
+
+  end () {
+    this.spawnCommandSync('git', ['init']);
+    this.spawnCommandSync('git', ['add', '--all']);
+    this.spawnCommandSync('git', ['commit', '-m', '"Initial Commit"']);
+    this.log(chalk.green('Your app is ready. Build something awesome!'));
+    this.spawnCommand('gulp', ['vendors']);
+    this.spawnCommand('gulp');
   }
 
   config () {
