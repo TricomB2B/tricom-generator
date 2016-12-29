@@ -79,14 +79,14 @@ module.exports = class extends Generator {
     copydir.sync(getTemplate('scss'), this.destinationPath('src/scss/'));
 
     this.fs.copy(getTemplate('.htaccess'), this.destinationPath('.htaccess'));
-    this.fs.copy(getTemplate('.editorconfig'), this.destinationPath('.editorconfig'));
+    this.fs.copy(getTemplate('editorconfig.txt'), this.destinationPath('.editorconfig'));
     this.fs.copy(getTemplate('.babelrc'), this.destinationPath('.babelrc'));
     this.fs.copy(getTemplate('data.json'), this.destinationPath('data.json'));
     this.fs.copy(getTemplate('gulpfile.babel.js'), this.destinationPath('gulpfile.babel.js'));
     this.fs.copy(getTemplate('readme.md'), this.destinationPath('readme.md'));
     this.fs.copy(getTemplate('js/data-factory.js'), this.destinationPath('src/factories/'+properties.prefixedName+'data/'+properties.prefixedName+'data.factory.js'));
 
-    this.fs.copy(getTemplate('.gitignore'), this.destinationPath('.gitignore'));
+    this.fs.copy(getTemplate('gitignore.txt'), this.destinationPath('.gitignore'));
 
     this.fs.copyTpl(
       getTemplate('index.html'),
