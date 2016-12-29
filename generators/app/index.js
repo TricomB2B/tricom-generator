@@ -19,6 +19,11 @@ module.exports = class extends Generator {
       default: this.appname
     }, {
       type: 'input',
+      name: 'prefix',
+      message: 'Global prefix (e.g. app = app-directive-name)',
+      default: 'app'
+    }, {
+      type: 'input',
       name: 'description',
       message: 'Description',
       default: this.appname
@@ -27,11 +32,6 @@ module.exports = class extends Generator {
       name: 'primaryColor',
       message: 'Primary Color',
       default: '#353535'
-    }, {
-      type: 'input',
-      name: 'prefix',
-      message: 'Global prefix (e.g. app = app-directive-name)',
-      default: 'app'
     }];
 
     return this.prompt(prompts).then(function (props) {
