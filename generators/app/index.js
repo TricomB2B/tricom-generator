@@ -19,6 +19,11 @@ module.exports = class extends Generator {
       default: this.appname
     }, {
       type: 'input',
+      name: 'prefix',
+      message: 'Global prefix (e.g. app = app-directive-name)',
+      default: 'app'
+    }, {
+      type: 'input',
       name: 'description',
       message: 'Description',
       default: this.appname
@@ -27,11 +32,6 @@ module.exports = class extends Generator {
       name: 'primaryColor',
       message: 'Primary Color',
       default: '#353535'
-    }, {
-      type: 'input',
-      name: 'prefix',
-      message: 'Global prefix (e.g. app = app-directive-name)',
-      default: 'app'
     }];
 
     return this.prompt(prompts).then(function (props) {
@@ -62,7 +62,7 @@ module.exports = class extends Generator {
     mkdirp.sync(this.destinationPath('src/factories'));
     mkdirp.sync(this.destinationPath('src/filters'));
     mkdirp.sync(this.destinationPath('src/views'));
-    mkdirp.sync(this.destinationPath('src/views/Home'));
+    mkdirp.sync(this.destinationPath('src/views/home'));
     mkdirp.sync(this.destinationPath('src/js'));
 
     this.fs.copy(getTemplate('.gitkeep'), this.destinationPath('img/.gitkeep'));
@@ -72,9 +72,9 @@ module.exports = class extends Generator {
     this.fs.copy(getTemplate('.gitkeep'), this.destinationPath('src/views/.gitkeep'));
     this.fs.copy(getTemplate('js/helpers.js'), this.destinationPath('src/js/helpers.js'));
     this.fs.copy(getTemplate('js/modernizr.js'), this.destinationPath('src/js/modernizr.js'));
-    this.fs.copy(getTemplate('view/view.html'), this.destinationPath('src/views/Home/Home.html'));
-    this.fs.copy(getTemplate('view/view.js'), this.destinationPath('src/views/Home/Home.js'));
-    this.fs.copy(getTemplate('view/view.scss'), this.destinationPath('src/views/Home/Home.scss'));
+    this.fs.copy(getTemplate('view/view.html'), this.destinationPath('src/views/home/home.html'));
+    this.fs.copy(getTemplate('view/view.js'), this.destinationPath('src/views/home/home.js'));
+    this.fs.copy(getTemplate('view/view.scss'), this.destinationPath('src/views/home/home.scss'));
 
     copydir.sync(getTemplate('scss'), this.destinationPath('src/scss/'));
 
@@ -106,17 +106,16 @@ module.exports = class extends Generator {
   }
 
   install () {
-    var gen = this;
-    this.installDependencies({
-            npm: false,
-            bower: false,
-            yarn: true,
-      callback: function () {
-        gen.log(chalk.green('Your app is ready. Build something awesome!'));
-        gen.spawnCommand('gulp', ['vendors']);
-        gen.spawnCommand('gulp');
-      }
-    });
+    this.yarnInstall();
+  }
+
+  end () {
+    this.spawnCommandSync('git', ['init']);
+    this.spawnCommandSync('git', ['add', '--all']);
+    this.spawnCommandSync('git', ['commit', '-m', '"Initial Commit"']);
+    this.log(chalk.green('Your app is ready. Build something awesome!'));
+    this.spawnCommand('gulp', ['vendors']);
+    this.spawnCommand('gulp');
   }
 
   config () {

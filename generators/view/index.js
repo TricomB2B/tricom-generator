@@ -76,29 +76,27 @@ module.exports = class extends Generator {
       }
     }
 
-    //this.log('prefix: ' + generator.config.get('prefix'));
-
     this.fs.copyTpl(
       getTemplate('views/view.html'),
-      this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.html'),
+      this.destinationPath('src/views/'+properties.lowerCase+'/'+properties.lowerCase+'.html'),
       properties
     );
     this.fs.copyTpl(
       getTemplate('views/view.scss'),
-      this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.scss'),
+      this.destinationPath('src/views/'+properties.lowerCase+'/'+properties.lowerCase+'.scss'),
       properties
     );
 
     if(this.props.stateParams){
       this.fs.copyTpl(
         getTemplate('viewParam/view.js'),
-        this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.js'),
+        this.destinationPath('src/views/'+properties.lowerCase+'/'+properties.lowerCase+'.js'),
         properties
       );
     }else{
       this.fs.copyTpl(
         getTemplate('views/view.js'),
-        this.destinationPath('src/views/'+properties.camelCase+'/'+properties.camelCase+'.js'),
+        this.destinationPath('src/views/'+properties.lowerCase+'/'+properties.lowerCase+'.js'),
         properties
       );
     }
