@@ -46,46 +46,46 @@ module.exports = class extends Generator {
 
     return this.prompt(prompts)
       .then((answers) => {
-        this.opts            = answers;
-        this.opts.lowerCase  = this.opts.name.toLowerCase();
-        this.opts.prefix     = this.config.get('prefix') ? this.config.get('prefix') : 'app';
-        this.opts.module     = caseIt.camelCase(`${this.opts.prefix}-${this.opts.name}-directive`);
-        this.opts.directive  = caseIt.camelCase(`${this.opts.prefix}-${this.opts.name}`);
-        this.opts.controller = caseIt.pascal(`${this.opts.name}-Ctrl`);
-        this.opts.urlSafe    = caseIt.paramCase(`${this.opts.prefix}-${this.opts.name}`);
-    });
+        this.props            = answers;
+        this.props.lowerCase  = this.props.name.toLowerCase();
+        this.props.prefix     = this.config.get('prefix') ? this.config.get('prefix') : 'app';
+        this.props.module     = caseIt.camelCase(`${this.props.prefix}-${this.props.name}-directive`);
+        this.props.directive  = caseIt.camelCase(`${this.props.prefix}-${this.props.name}`);
+        this.props.controller = caseIt.pascal(`${this.props.name}-Ctrl`);
+        this.props.urlSafe    = caseIt.paramCase(`${this.props.prefix}-${this.props.name}`);
+      });
   }
 
   // Writing Queue
   writing () {
-    const opts     = this.opts,
+    const props    = this.props,
           appFile  = 'src/js/app.js',
           compFile = 'src/scss/styling/_components.scss';
 
     let p1, p2 = null;
 
     // create the directive files using the templates
-    if (opts.element) {
+    if (props.element) {
       this.fs.copyTpl(
         this.templatePath('directive.js'),
-        this.destinationPath(`src/directives/${opts.urlSafe}/${opts.urlSafe}.directive.js`),
-        opts
+        this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.directive.js`),
+        props
       );
       this.fs.copyTpl(
         this.templatePath('directive.html'),
-        this.destinationPath(`src/directives/${opts.urlSafe}/${opts.urlSafe}.html`),
-        opts
+        this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.html`),
+        props
       );
       this.fs.copyTpl(
         this.templatePath('directive.scss'),
-        this.destinationPath(`src/directives/${opts.urlSafe}/${opts.urlSafe}.scss`),
-        opts
+        this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.scss`),
+        props
       );
     } else {
       this.fs.copyTpl(
         this.templatePath('attr-directive.js'),
-        this.destinationPath(`src/directives/${opts.urlSafe}/${opts.urlSafe}.directive.js`),
-        opts
+        this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.directive.js`),
+        props
       );
     }
 
@@ -93,7 +93,7 @@ module.exports = class extends Generator {
     p1 = fsp
       .readFile(this.destinationPath(appFile), 'utf8')
       .then((data) => {
-        let newFile = data.replace(/(\/\/!!D!!\/\/)/, `'${opts.module}',\n\t\t\t//!!D!!//`);
+        let newFile = data.replace(/(\/\/!!D!!\/\/)/, `'${props.module}',\n\t\t\t//!!D!!//`);
 
         return fsp.writeFile(this.destinationPath(appFile), newFile);
       })
@@ -101,12 +101,12 @@ module.exports = class extends Generator {
          this.log(`   ${chalk.green('update')} ${appFile}`);
       });
 
-    if (opts.element) {
+    if (props.element) {
       // update the components sass file with the new component
       p2 = fsp
         .readFile(this.destinationPath(compFile), 'utf8')
         .then((data) => {
-          let newFile = data.replace(/(\/\/!!D!!\/\/)/, `@import "../../directives/${opts.urlSafe}/${opts.urlSafe}";\n//!!D!!//`);
+          let newFile = data.replace(/(\/\/!!D!!\/\/)/, `@import "../../directives/${props.urlSafe}/${props.urlSafe}";\n//!!D!!//`);
 
           return fsp.writeFile(this.destinationPath(compFile), newFile);
         })
