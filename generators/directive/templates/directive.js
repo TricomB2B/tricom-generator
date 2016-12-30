@@ -15,7 +15,7 @@
   */
   function <%= directive %> () {
     let directive = {
-      restrict: '<%= attribute ? "AEC" : "E" %>',
+      restrict: '<%= element ? 'E' : '' %><%= attribute ? 'A' : '' %>',
       templateUrl: '<%= urlSafe %>.html',
       controller: <%= controller %>,
       controllerAs: '<%= controllerAs %>',
