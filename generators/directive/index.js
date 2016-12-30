@@ -6,7 +6,6 @@
 
 var Generator  = require('yeoman-generator'),
     chalk      = require('chalk'),
-    yosay      = require('yosay'),
     caseIt     = require('change-case'),
     fsp        = require('fs-promise');
 
@@ -20,7 +19,7 @@ module.exports = class extends Generator {
     }, {
       type: 'input',
       name: 'description',
-      message: 'Describe this directive',
+      message: 'Describe this directive.',
       default: 'description'
     }, {
       type: 'confirm',
@@ -47,7 +46,6 @@ module.exports = class extends Generator {
     return this.prompt(prompts)
       .then((answers) => {
         this.props            = answers;
-        this.props.lowerCase  = this.props.name.toLowerCase();
         this.props.prefix     = this.config.get('prefix') ? this.config.get('prefix') : 'app';
         this.props.module     = caseIt.camelCase(`${this.props.prefix}-${this.props.name}-directive`);
         this.props.directive  = caseIt.camelCase(`${this.props.prefix}-${this.props.name}`);
@@ -93,7 +91,7 @@ module.exports = class extends Generator {
     p1 = fsp
       .readFile(this.destinationPath(appFile), 'utf8')
       .then((data) => {
-        let newFile = data.replace(/(\/\/!!D!!\/\/)/, `'${props.module}',\n\t\t\t//!!D!!//`);
+        let newFile = data.replace(/(\/\/!!D!!\/\/)/, `'${props.module}',\n      //!!D!!//`);
 
         return fsp.writeFile(this.destinationPath(appFile), newFile);
       })
