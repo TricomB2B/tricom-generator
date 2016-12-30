@@ -16,7 +16,7 @@
                 url: '/',
                 views: {
                     'main@': {
-                        templateUrl: getTemplateUrl('Home'),
+                        templateUrl: 'home.html',
                         controller: HomeCtrl,
                         controllerAs: 'hom'
                     }
