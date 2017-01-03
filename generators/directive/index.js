@@ -49,7 +49,7 @@ module.exports = class extends Generator {
         this.props.prefix     = this.config.get('prefix') ? this.config.get('prefix') : 'app';
         this.props.module     = caseIt.camelCase(`${this.props.prefix}-${this.props.name}-directive`);
         this.props.directive  = caseIt.camelCase(`${this.props.prefix}-${this.props.name}`);
-        this.props.controller = caseIt.pascal(`${this.props.name}-Ctrl`);
+        this.props.controller = caseIt.pascal(`${this.props.name}-ctrl`);
         this.props.urlSafe    = caseIt.paramCase(`${this.props.prefix}-${this.props.name}`);
       });
   }
