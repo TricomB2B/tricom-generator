@@ -19,7 +19,6 @@
   "dependencies": {
     "chalk": "^1.0.0",
     "change-case": "^3.0.0",
-    "copy-dir": "^0.3.0",
     "download-git-repo": "^0.2.1",
     "fs": "0.0.1-security",
     "fs-promise": "^1.0.0",

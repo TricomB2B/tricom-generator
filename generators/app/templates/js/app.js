@@ -1,3 +1,12 @@
+/**
+ * <%= name %>
+ * <%= description %>
+ *
+ * @repo    https://github.com/TricomB2B/<%= appName %>
+ * @author  Someone <someone@somewhere.com>
+ * @version 0.0.0
+ */
+
 (function () {
 	'use strict';
 
@@ -9,7 +18,6 @@
 			'DataFactory',
 			'HomeView',
 			// enter additional modules/components here
-
 
 			// Generator Views
 			//!!V!!//
@@ -28,11 +36,7 @@
 
 
 	/**
-	 * @name stateDebug
-	 * @methodOf <%= prefix %>
-	 * @description
 	 * Useful output for debugging state changes
-	 * @requires $rootScope
 	 * @ngInject
 	 */
 	function stateDebug($rootScope) {
@@ -61,22 +65,17 @@
 	}
 
 	/**
-	 * [bootstrap description]
-	 * @return {[type]} [description]
-	 * @ngInject
-	 */
+   * Initialize any components or elements when the application starts up
+   * @ngInject
+   */
 	function bootstrap() {
-
 		console.log('bootstrapped');
-
 	}
 
 	/**
-	 * [rootConfig description]
-	 * @return {[type]} [description]
-	 * @ngInject
-	 */
-
+   * State configuration for the top-level application and root state
+   * @ngInject
+   */
 	function rootConfig($stateProvider, $urlRouterProvider, $locationProvider) {
 		$locationProvider.html5Mode(true);
 		$urlRouterProvider.otherwise('/');
@@ -88,10 +87,8 @@
 				resolve: {
 					data: function (DataFactory) {
 						return DataFactory.initialize().$promise;
-					},
-					//!!FI!!//
+					}
 				}
 			});
 	}
-
 })();
