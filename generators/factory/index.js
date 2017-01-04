@@ -16,6 +16,7 @@ module.exports = class extends Generator {
       type: 'input',
       name: 'name',
       message: 'What is the name of this Factory?',
+      validate: Boolean
     }, {
       type: 'input',
       name: 'description',
