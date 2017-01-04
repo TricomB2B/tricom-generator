@@ -63,12 +63,12 @@ module.exports = class extends Generator {
     let p1, p2 = null;
 
     // create the directive files using the templates
+    this.fs.copyTpl(
+      this.templatePath('directive.js'),
+      this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.directive.js`),
+      props
+    );
     if (props.element) {
-      this.fs.copyTpl(
-        this.templatePath('directive.js'),
-        this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.directive.js`),
-        props
-      );
       this.fs.copyTpl(
         this.templatePath('directive.html'),
         this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.html`),
@@ -77,12 +77,6 @@ module.exports = class extends Generator {
       this.fs.copyTpl(
         this.templatePath('directive.scss'),
         this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.scss`),
-        props
-      );
-    } else {
-      this.fs.copyTpl(
-        this.templatePath('attr-directive.js'),
-        this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.directive.js`),
         props
       );
     }
