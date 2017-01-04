@@ -11,9 +11,9 @@
     .factory('<%= factory %>', <%= factory %>);
 
   /**
-  * Factory Definition
-  * @ngInject
-  */
+   * Factory Definition
+   * @ngInject
+   */
   function <%= factory %> () {
     let data = {};
 
@@ -22,6 +22,6 @@
     };
     return factory;
 
-  //!!FF!!// DO NOT REMOVE IF USING GENERATOR //
+    //!!FF!!// DO NOT REMOVE IF USING GENERATOR //
   }
 })();
