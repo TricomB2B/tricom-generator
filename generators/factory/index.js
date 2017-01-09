@@ -1,71 +1,71 @@
 'use strict';
 
+/**
+ * Generates a factory.
+ */
+
 var Generator = require('yeoman-generator'),
     chalk     = require('chalk'),
-    yosay     = require('yosay'),
-    fs        = require('fs');
+    caseIt    = require('change-case'),
+    fsp       = require('fs-promise');
 
 module.exports = class extends Generator {
+  // Prompting Queue
   prompting () {
-
-    var prompts = [{
+    const prompts = [{
       type: 'input',
       name: 'name',
       message: 'What is the name of this Factory?',
+      validate: Boolean
     }, {
       type: 'input',
       name: 'description',
-      message: 'Describe this Factory',
+      message: 'Describe this factory and make it sound sexy.',
       default: 'description'
     }];
 
-    return this.prompt(prompts).then(function (props) {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-
-    }.bind(this));
+    return this.prompt(prompts)
+      .then((answers) => {
+        this.props         = answers;
+        this.props.prefix  = this.config.get('prefix') ? this.config.get('prefix') : 'app';
+        this.props.module  = caseIt.camelCase(`${this.props.prefix}-${this.props.name}-factory`);
+        this.props.factory = caseIt.pascal(`${this.props.name}-factory`);
+        this.props.urlSafe = caseIt.paramCase(`${this.props.prefix}-${this.props.name}`);
+      });
   }
 
+  // Writing Queue
   writing () {
+    const props   = this.props,
+          appFile = 'src/js/app.js';
 
-    var gen = this,
-        getTemplate = function(template){
-            return gen.templatePath(`../../../templates/${template}`);
-        },
-        properties = {
-            description: this.props.description,
-            lowerCase: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, ''),
-            camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
-            return match.slice(match.length-1, match.length).toUpperCase();
-            }).replace(/[^A-Za-z0-9]+$/, ""),
-            urlSafe: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, '-').replace(/[^A-Za-z0-9]+$/, ""),
-            prefix: this.config.get('prefix') ? this.config.get('prefix') + '-' : 'app' +'-'
-        };
+    let p1 = null;
 
+    // create the factory file using the template
     this.fs.copyTpl(
-      getTemplate('factory/factory.js'),
-      this.destinationPath('src/factories/'+ properties.prefix + properties.urlSafe +'/'+ properties.prefix + properties.urlSafe +'.factory.js'),
-      properties
+      this.templatePath('factory.js'),
+      this.destinationPath(`src/factories/${props.urlSafe}/${props.urlSafe}.factory.js`),
+      props
     );
 
-    var yet = this;
+    // update the app file with the new module dependency
+    p1 = fsp
+      .readFile(this.destinationPath(appFile), 'utf8')
+      .then((data) => {
+        let newFile = data.replace(/(\/\/!!F!!\/\/)/, `'${props.module}',\n      //!!F!!//`);
 
-    fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
-      if (err) yet.log(err);
-
-      var newValue = data.replace(/(\/\/!!F!!\/\/)/, '\''+properties.camelCase+'Factory\', \n\t\t\t//!!F!!//')
-        .replace(/(\/\/!!FAI!!\/\/)/, properties.lowerCase+': function('+properties.camelCase+'Factory){\n\t\t\t\t\t\treturn '+properties.camelCase+'Factory.initialize().$promise\n\t\t\t\t\t}, \n\t\t\t\t\t//!!FI!!//');
-
-      fs.writeFile(yet.destinationPath('src/js/app.js'), newValue, 'utf-8', function (err) {
-        if (err) yet.log(err);
-        yet.log('Updated module dependencies')
+        return fsp.writeFile(this.destinationPath(appFile), newFile);
+      })
+      .then(() => {
+        this.log(`   ${chalk.green('update')} ${appFile}`);
       });
-    });
 
+    // prevents end queue from executing until writing queue is done
+    return Promise.all([p1]);
   }
 
-  install () {
-    this.log(chalk.green('Your Factory is ready'));
+  // End Queue
+  end () {
+    this.log(chalk.green('Your factory is ready'));
   }
-
 }

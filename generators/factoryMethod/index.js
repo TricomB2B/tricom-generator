@@ -1,81 +1,79 @@
 'use strict';
 
+/**
+ * Adds a method to a previously generated factory.
+ */
+
 var Generator = require('yeoman-generator'),
     chalk     = require('chalk'),
-    yosay     = require('yosay'),
-    fs        = require('fs');
+    caseIt    = require('change-case'),
+    fsp       = require('fs-promise');
 
 module.exports = class extends Generator {
+  // Prompting Queue
   prompting () {
-
-    var prompts = [{
+    const prompts = [{
       type: 'input',
       name: 'factoryName',
       message: 'What is the name of the Factory?',
+      validate: (answer) => {
+        let prefix   = this.config.get('prefix') ? this.config.get('prefix') : 'app',
+            filename = caseIt.paramCase(`${prefix}-${answer}`),
+            filepath = this.destinationPath(`src/factories/${filename}/${filename}.factory.js`);
+
+        if (this.fs.exists(filepath))
+          return true;
+        else
+          return `Factory ${answer} does not exist.`;
+      }
     }, {
       type: 'input',
       name: 'methodName',
-      message: 'What is the name of the Method',
+      message: 'Name of this method?',
+      validate: Boolean
     }, {
       type: 'input',
       name: 'methodDescription',
-      message: 'Describe this method',
+      message: 'Describe this method.',
+      default: 'description'
     }];
 
-    return this.prompt(prompts).then(function (props) {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-
-    }.bind(this));
+    return this.prompt(prompts)
+      .then((answers) => {
+        this.props          = answers;
+        this.props.prefix   = this.config.get('prefix') ? this.config.get('prefix') : 'app';
+        this.props.filename = caseIt.paramCase(`${this.props.prefix}-${this.props.factoryName}`);
+        this.props.filepath = `src/factories/${this.props.filename}/${this.props.filename}.factory.js`;
+        this.props.method   = caseIt.camelCase(this.props.methodName);
+      });
   }
 
+  // Writing Queue
   writing () {
+    const props = this.props;
 
-    var properties = {
-      description: this.props.methodDescription,
-      factory: this.props.factoryName.toLowerCase(),
-      method: this.props.methodName.replace(/(\s|[^A-Za-z0-9])+./g, function(match){
-        return match.slice(match.length-1, match.length).toUpperCase();
-      }).replace(/[^A-Za-z0-9]+$/, ""),
-      prefix: this.config.get('prefix') ? this.config.get('prefix') + '-' : 'app' +'-',
-    };
+    let p1 = null;
 
-    if(properties.factory.slice(0, properties.prefix.length) === properties.prefix) {
-      properties.fileName = properties.factory;
-    }else{
-      properties.fileName = properties.prefix + properties.factory;
-    }
+    // udpate the factory file with the new method
+    p1 = fsp
+      .readFile(this.destinationPath(props.filepath), 'utf8')
+      .then((data) => {
+        let newFile = data
+          .replace(/(\/\/!!FC!!\/\/)/, `${props.method}: ${props.method},\n      //!!FC!!//`)
+          .replace(/(\/\/!!FF!!\/\/)/, `/**\n     * ${props.methodDescription}\n     */\n    function ${props.method} {\n\n    }\n\n    //!!FF!!//`);
 
-    //console.log(this.destinationPath('src/factories/'+properties.prefix + properties.factory));
+        return fsp.writeFile(this.destinationPath(props.filepath), newFile);
+      })
+      .then(() => {
+        this.log(`   ${chalk.green('update')} ${props.filepath}`);
+      });
 
-    var yet = this;
-
-    fs.readFile(yet.destinationPath('src/factories/'+properties.fileName+'/'+properties.fileName+'.factory.js'), 'utf-8', function(err, data){
-      if (err) {
-        yet.factoryFound = false;
-      }else{
-        yet.factoryFound = true;
-
-
-        var newValue = data.replace(/(\/\/!!FC!!\/\/)/, properties.method + ': '+ properties.method +', \n\t\t\t//!!FC!!//').replace(/(\/\/!!FF!!\/\/)/, 'function '+properties.method+'(){\n\t\t\tconsole.log("'+properties.method+'")\n\t\t} \n\n\t\t//!!FF!!//');
-
-        fs.writeFile(yet.destinationPath('src/factories/'+properties.fileName+'/'+properties.fileName+'.factory.js'), newValue, 'utf-8', function (err) {
-          if (err) yet.log(err);
-        });
-
-      }
-
-    });
-
-    this.props.props = properties;
-
+    // prevents end qeuue from executing until writing queue is done
+    return Promise.all([p1]);
   }
 
-  install () {
-    if (this.factoryFound)
-      this.log(chalk.green('Factory '+this.props.props.fileName+' updated!'));
-    else
-      this.log(chalk.red('Factory '+this.props.props.fileName+' not found.'));
+  // End Queue
+  end () {
+    this.log(chalk.green('Your factory method is ready'));
   }
-
 }

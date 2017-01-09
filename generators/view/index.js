@@ -1,21 +1,26 @@
 'use strict';
 
+/**
+ * Generates a view.
+ */
+
 var Generator = require('yeoman-generator'),
     chalk     = require('chalk'),
-    yosay     = require('yosay'),
-    fs        = require('fs');
+    caseIt    = require('change-case'),
+    fsp       = require('fs-promise');
 
 module.exports = class extends Generator {
+  // Prompting Queue
   prompting () {
-
     var prompts = [{
       type: 'input',
       name: 'name',
       message: 'What is the name of this view?',
+      validate: Boolean
     }, {
       type: 'input',
       name: 'description',
-      message: 'Describe this view',
+      message: 'Describe this view.',
       default: 'description'
     }, {
       type: 'confirm',
@@ -24,11 +29,13 @@ module.exports = class extends Generator {
     }, {
       type: 'input',
       name: 'url',
-      message: 'View url'
+      message: 'What is the url?',
+      validate: Boolean
     }, {
       type: 'input',
       name: 'state',
-      message: 'View State'
+      message: 'What is the state name?',
+      validate: Boolean
     }, {
       type: 'input',
       name: 'controllerAs',
@@ -36,99 +43,78 @@ module.exports = class extends Generator {
       default: 'vm'
     }];
 
-    return this.prompt(prompts).then(function (props) {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-      this.log(props);
-
-    }.bind(this));
+    return this.prompt(prompts)
+      .then((answers) => {
+        this.props            = answers;
+        this.props.module     = caseIt.camelCase(`${this.props.name}-view`);
+        this.props.config     = caseIt.pascal(`${this.props.name}-config`);
+        this.props.controller = caseIt.pascal(`${this.props.name}-ctrl`);
+        this.props.urlSafe    = caseIt.paramCase(`${this.props.name}`);
+        this.props.params     = [];
+      });
   }
 
+  // Writing Queue
   writing () {
+    const props    = this.props,
+          appFile  = 'src/js/app.js',
+          viewFile = 'src/scss/styling/_views.scss';
+          //viewTpl  = (props.stateParams) ? 'param-view.js' : 'view.js';
 
-    var gen = this,
-      getTemplate = function(template){
-        return gen.templatePath(`../../../templates/${template}`);
-      },
-      properties = {
-        name: this.props.name,
-        description: this.props.description,
-        url: this.props.url,
-        state: this.props.state,
-        lowerCase: this.props.name.toLowerCase(),
-        camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
-          return match.slice(match.length-1, match.length).toUpperCase();
-        }).replace(/[^A-Za-z0-9]+$/, ""),
-        controllerAs: this.props.controllerAs,
-        params: []
-      };
+    let p1, p2 = null;
 
-    if(this.props.stateParams){
-      var matches = properties.url.match(/:[A-Za-z0-9]+/g);
+    if (props.stateParams) {
+      let matches  = props.url.match(/:[A-Za-z0-9]+/g),
+          params   = matches.map(s => s.slice(1));
 
-      if(matches && matches.length > 0){
-        this.log(matches);
-        for(var i = 0; i < matches.length; i++){
-          var text = matches[i].replace(/:/, '');
-          properties.params.push(text);
-        }
-        this.log(properties.params);
-      }
+      props.params = params;
     }
 
+    // create the view files using the templates
     this.fs.copyTpl(
-      getTemplate('views/view.html'),
-      this.destinationPath('src/views/'+properties.lowerCase+'/'+properties.lowerCase+'.html'),
-      properties
+      this.templatePath('view.js'),
+      this.destinationPath(`src/views/${props.urlSafe}/${props.urlSafe}.js`),
+      props
     );
     this.fs.copyTpl(
-      getTemplate('views/view.scss'),
-      this.destinationPath('src/views/'+properties.lowerCase+'/'+properties.lowerCase+'.scss'),
-      properties
+      this.templatePath('view.html'),
+      this.destinationPath(`src/views/${props.urlSafe}/${props.urlSafe}.html`),
+      props
+    );
+    this.fs.copyTpl(
+      this.templatePath('view.scss'),
+      this.destinationPath(`src/views/${props.urlSafe}/${props.urlSafe}.scss`),
+      props
     );
 
-    if(this.props.stateParams){
-      this.fs.copyTpl(
-        getTemplate('viewParam/view.js'),
-        this.destinationPath('src/views/'+properties.lowerCase+'/'+properties.lowerCase+'.js'),
-        properties
-      );
-    }else{
-      this.fs.copyTpl(
-        getTemplate('views/view.js'),
-        this.destinationPath('src/views/'+properties.lowerCase+'/'+properties.lowerCase+'.js'),
-        properties
-      );
-    }
+    p1 = fsp
+      .readFile(this.destinationPath(appFile), 'utf8')
+      .then((data) => {
+        let newFile = data.replace(/(\/\/!!V!!\/\/)/, `'${props.module}',\n      //!!V!!//`);
 
-    var yet = this;
-
-    fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
-      if (err) yet.log(err);
-
-      var newValue = data.replace(/(\/\/!!V!!\/\/)/, '\''+properties.camelCase+'View\', \n\t\t\t//!!V!!//');
-
-      fs.writeFile(yet.destinationPath('src/js/app.js'), newValue, 'utf-8', function (err) {
-        if (err) yet.log(err);
-        yet.log('Updated module dependencies')
+        return fsp.writeFile(this.destinationPath(appFile), newFile);
+      })
+      .then(() => {
+        this.log(`   ${chalk.green('update')} ${appFile}`);
       });
-    });
 
-    fs.readFile(yet.destinationPath('src/scss/styling/_views.scss'), 'utf-8', function(err, data){
-      if (err) yet.log(err);
+    p2 = fsp
+      .readFile(this.destinationPath(viewFile), 'utf8')
+      .then((data) => {
+        let newFile = data.replace(/(\/\/!!V!!\/\/)/, `@import "../../views/${props.urlSafe}/${props.urlSafe}";\n//!!V!!//`);
 
-      var newValue = data.replace(/(\/\/!!V!!\/\/)/, '@import "../../views/'+properties.camelCase+'/'+properties.camelCase+'; \n//!!V!!//');
-
-      fs.writeFile(yet.destinationPath('src/scss/styling/_views.scss'), newValue, 'utf-8', function (err) {
-        if (err) yet.log(err);
-        yet.log('Injected styling into views file');
+        return fsp.writeFile(this.destinationPath(viewFile), newFile);
+      })
+      .then(() => {
+        this.log(`   ${chalk.green('update')} ${viewFile}`);
       });
-    });
 
+    // prevents end queue from executing until writing queue is done
+    return Promise.all([p1, p2]);
   }
 
-  install () {
+  // End Queue
+  end () {
     this.log(chalk.green('Your view is ready'));
   }
-
 }

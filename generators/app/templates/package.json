@@ -1,5 +1,5 @@
 {
-  "name": "<%= prefix %>",
+  "name": "<%= appName %>",
   "version": "0.0.0",
   "description": "<%= description %>",
   "main": "index.html",
@@ -52,5 +52,5 @@
     "test": "gulp test"
   },
   "author": "TricomB2B",
-  "license": "UNLICENSE"
+  "license": "SEE LICENSE IN LICENSE"
 }

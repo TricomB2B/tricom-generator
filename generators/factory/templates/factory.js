@@ -1,37 +1,27 @@
 /**
- *
+ * <%= description %>
+ * @author
  */
 
 (function () {
-
   'use strict';
 
   angular
-    .module('<%= camelCase %>Factory', [])
-    .factory('<%= camelCase %>Factory', <%= camelCase %>Factory);
+    .module('<%= module %>', [])
+    .factory('<%= factory %>', <%= factory %>);
 
   /**
-   * @param {[type]} <%= camelCase %>Factory [description]
+   * Factory Definition
    * @ngInject
    */
-  function <%= camelCase %>Factory () {
-    var data = {};
+  function <%= factory %> () {
+    let data = {};
 
-    var factory = {
-      initialize: initialize,
+    let factory = {
       //!!FC!!// DO NOT REMOVE IF USING GENERATOR //
     };
     return factory;
 
-    /**
-     * [initialize description]
-     * @return {[type]} [description]
-     */
-    function initialize() {
-      console.log('<%= camelCase %>Factory init')
-    }
-
     //!!FF!!// DO NOT REMOVE IF USING GENERATOR //
   }
-
 })();

@@ -1,21 +1,26 @@
 'use strict';
 
-var Generator = require('yeoman-generator'),
-    chalk     = require('chalk'),
-    yosay     = require('yosay'),
-    fs        = require('fs');
+/**
+ * Generates a directive.
+ */
+
+var Generator  = require('yeoman-generator'),
+    chalk      = require('chalk'),
+    caseIt     = require('change-case'),
+    fsp        = require('fs-promise');
 
 module.exports = class extends Generator {
+  // Prompting Queue
   prompting () {
-
-    var prompts = [{
+    const prompts = [{
       type: 'input',
       name: 'name',
       message: 'What is the name of this directive?',
+      validate: Boolean
     }, {
       type: 'input',
       name: 'description',
-      message: 'Describe this directive',
+      message: 'Describe this directive.',
       default: 'description'
     }, {
       type: 'confirm',
@@ -33,115 +38,82 @@ module.exports = class extends Generator {
       type: 'input',
       name: 'controllerAs',
       message: 'Controller name?',
-      default: 'vm'
+      default: 'vm',
+      when: (answers) => {
+        return answers.element;
+      }
     }];
 
-    return this.prompt(prompts).then(function (props) {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-
-    }.bind(this));
+    return this.prompt(prompts)
+      .then((answers) => {
+        this.props            = answers;
+        this.props.prefix     = this.config.get('prefix') ? this.config.get('prefix') : 'app';
+        this.props.module     = caseIt.camelCase(`${this.props.prefix}-${this.props.name}-directive`);
+        this.props.directive  = caseIt.camelCase(`${this.props.prefix}-${this.props.name}`);
+        this.props.controller = caseIt.pascal(`${this.props.name}-ctrl`);
+        this.props.urlSafe    = caseIt.paramCase(`${this.props.prefix}-${this.props.name}`);
+      });
   }
 
+  // Writing Queue
   writing () {
+    const props    = this.props,
+          appFile  = 'src/js/app.js',
+          compFile = 'src/scss/styling/_components.scss';
 
-    var gen = this,
-      properties = {
-        name: this.props.name,
-        description: this.props.description,
-        lowerCase: this.props.name.toLowerCase(),
-        camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
-          return match.slice(match.length-1, match.length).toUpperCase();
-        }).replace(/[^A-Za-z0-9]+$/, ""),
-        attribute: this.props.attribute,
-        element: this.props.element,
-        controllerAs: this.props.controllerAs,
-        urlSafe: this.props.name.toLowerCase().replace(/[^A-Za-z0-9]+/g, '-').replace(/[^A-Za-z0-9]+$/, ""),
-        isolateScope: this.props.isolateScope,
-        prefix: this.config.get('prefix') ? this.config.get('prefix') : 'app'
-      };
+    let p1, p2 = null;
 
-    function getTemplate(template){
-      return gen.templatePath(`../../../templates/${template}`);
+    // create the directive files using the templates
+    this.fs.copyTpl(
+      this.templatePath('directive.js'),
+      this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.directive.js`),
+      props
+    );
+    if (props.element) {
+      this.fs.copyTpl(
+        this.templatePath('directive.html'),
+        this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.html`),
+        props
+      );
+      this.fs.copyTpl(
+        this.templatePath('directive.scss'),
+        this.destinationPath(`src/directives/${props.urlSafe}/${props.urlSafe}.scss`),
+        props
+      );
     }
 
-    if(properties.element) {
+    // update the app file with the new module dependency
+    p1 = fsp
+      .readFile(this.destinationPath(appFile), 'utf8')
+      .then((data) => {
+        let newFile = data.replace(/(\/\/!!D!!\/\/)/, `'${props.module}',\n      //!!D!!//`);
 
-      this.fs.copyTpl(
-        getTemplate('directive/directive.js'),
-        this.destinationPath('src/directives/' + properties.prefix + '-' + properties.urlSafe + '/' + properties.prefix + '-' + properties.urlSafe + '.directive.js'),
-        properties
-      );
-
-      this.fs.copyTpl(
-        getTemplate('directive/directive.html'),
-        this.destinationPath('src/directives/' + properties.prefix + '-' + properties.urlSafe + '/' + properties.prefix + '-' + properties.urlSafe + '.html'),
-        properties
-      );
-
-      this.fs.copyTpl(
-        getTemplate('directive/directive.scss'),
-        this.destinationPath('src/directives/' + properties.prefix + '-' + properties.urlSafe + '/' + properties.prefix + '-' + properties.urlSafe + '.scss'),
-        properties
-      );
-
-    }else{
-
-      this.fs.copyTpl(
-        getTemplate('directiveAttribute/directive.js'),
-        this.destinationPath(`src/directives/${properties.prefix}-${properties.urlSafe}/${properties.prefix}-${properties.urlSafe}.directive.js`),
-        properties
-      );
-
-    }
-
-    var yet = this;
-
-    fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
-      if (err) yet.log(err);
-
-      var newValue = data.replace(/(\/\/!!D!!\/\/)/, '\''+properties.prefix + properties.camelCase+'Directive\', \n\t\t\t//!!D!!//');
-
-      fs.writeFile(yet.destinationPath('src/js/app.js'), newValue, 'utf-8', function (err) {
-        if (err) yet.log(err);
-        yet.log('Updated module dependencies')
+        return fsp.writeFile(this.destinationPath(appFile), newFile);
+      })
+      .then(() => {
+         this.log(`   ${chalk.green('update')} ${appFile}`);
       });
-    });
 
-    // matches
-    //
-    // module('app', [
-    //  'test',
-    //  'tester2'
-    // ]);
-    //
-    // \.module\('app', \[(\n\s.+)+\]\)
+    if (props.element) {
+      // update the components sass file with the new component
+      p2 = fsp
+        .readFile(this.destinationPath(compFile), 'utf8')
+        .then((data) => {
+          let newFile = data.replace(/(\/\/!!D!!\/\/)/, `@import "../../directives/${props.urlSafe}/${props.urlSafe}";\n//!!D!!//`);
 
+          return fsp.writeFile(this.destinationPath(compFile), newFile);
+        })
+        .then(() => {
+          this.log(`   ${chalk.green('update')} ${compFile}`);
+        });
+      }
 
-        // matches
-        //
-    // [
-    //  'test',
-    //  'tester2'
-    // ]
-
-    // \[(\n\s.+)+\]
-
-    fs.readFile(yet.destinationPath('src/scss/styling/_components.scss'), 'utf-8', function(err, data){
-      if (err) yet.log(err);
-
-      var newValue = data.replace(/(\/\/!!D!!\/\/)/, '@import "../../directives/'+properties.prefix + '-' + properties.urlSafe + '/'+properties.prefix + '-' + properties.urlSafe + '"; \n//!!D!!//');
-
-      fs.writeFile(yet.destinationPath('src/scss/styling/_components.scss'), newValue, 'utf-8', function (err) {
-        if (err) yet.log(err);
-        yet.log('Injected styling into components file');
-      });
-    });
-
+    // prevents end queue from executing until writing queue is done
+    return Promise.all([p1, p2]);
   }
 
-  install () {
+  // End Queue
+  end () {
     this.log(chalk.green('Your directive is ready'));
   }
-
 }
