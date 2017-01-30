@@ -81,6 +81,7 @@ module.exports = yeoman.Base.extend({
 		this.fs.copy(getTemplate('data.json'), this.destinationPath('data.json'));
 		this.fs.copy(getTemplate('gulpfile.js'), this.destinationPath('gulpfile.js'));
 		this.fs.copy(getTemplate('readme.md'), this.destinationPath('readme.md'));
+		this.fs.copy(getTemplate('yarn.lock'), this.destinationPath('yarn.lock'));
 		this.fs.copy(getTemplate('js/data-factory.js'), this.destinationPath('src/factories/'+properties.prefixedName+'data/'+properties.prefixedName+'data.factory.js'));
 
 		this.fs.copy(getTemplate('gitignore.txt'), this.destinationPath('.gitignore'));
@@ -104,12 +105,12 @@ module.exports = yeoman.Base.extend({
 	install: function () {
 		var gen = this;
 		this.installDependencies({
-            npm: false,
+            npm: true,
             bower: false,
             yarn: true,
 			callback: function () {
 				gen.log(chalk.green('Your app is ready. Build something awesome!'));
-				gen.spawnCommand('gulp', ['vendors']);
+				gen.spawnCommand('gulp vendors');
 				gen.spawnCommand('gulp');
 			}
 		});

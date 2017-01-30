@@ -101,50 +101,50 @@ module.exports = yeoman.Base.extend({
 
 		fs.readFile(yet.destinationPath('src/js/app.js'), 'utf-8', function(err, data){
 
-			var main = esprima.parse(data, {
-					range: true,
-					tokens: true,
-					comment: true,
-                    attachComment: true
-				}),
-				chk = main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements;
-
-			console.log(main);
-			console.log(main.comments);
-			console.log(main.tokens);
-
-			console.log(main);
-
-			chk.push({
-				type: 'Literal',
-				value: properties.injectionName,
-				raw: '\''+properties.injectionName+'\''
-			});
-
-			// chk.push(escodegen.generate({
-			// 	type: 'Literal',
-			// 	value: properties.prefix + properties.camelCase,
-			// }));
-
-			var newArr = _.sortBy(chk, 'value');
-            main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements = newArr;
-
-            // var main2 = escodegen.attachComments(main, main.comments, main.tokens);
-
-            console.log(main);
-            console.log(chk);
-            console.log(newArr);
-
-            var final = escodegen.generate(main, {
-            	comment: true,
-            });
-            console.log(final);
+            // var main = esprima.parse(data, {
+				// 	range: true,
+				// 	tokens: true,
+				// 	comment: true,
+            //         attachComment: true
+				// }),
+				// chk = main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements;
+            //
+            // console.log(main);
+            // console.log(main.comments);
+            // console.log(main.tokens);
+            //
+            // console.log(main);
+            //
+            // chk.push({
+				// type: 'Literal',
+				// value: properties.injectionName,
+				// raw: '\''+properties.injectionName+'\''
+            // });
+            //
+            // // chk.push(escodegen.generate({
+            // // 	type: 'Literal',
+            // // 	value: properties.prefix + properties.camelCase,
+            // // }));
+            //
+            // var newArr = _.sortBy(chk, 'value');
+            // main.body[0].expression.callee.body.body[1].expression.callee.object.callee.object.arguments[1].elements = newArr;
+            //
+            // // var main2 = escodegen.attachComments(main, main.comments, main.tokens);
+            //
+            // console.log(main);
+            // console.log(chk);
+            // console.log(newArr);
+            //
+            // var final = escodegen.generate(main, {
+            // 	comment: true,
+            // });
+            // console.log(final);
 
 			if (err) yet.log(err);
 
-			// var newValue = data.replace(/(\/\/!!D!!\/\/)/, '\''+properties.prefix + properties.camelCase+'Directive\', \n\t\t\t//!!D!!//');
+			var newValue = data.replace(/(\/\/!!D!!\/\/)/, '\''+properties.prefix + properties.camelCase+'Directive\', \n\t\t\t//!!D!!//');
 
-			fs.writeFile(yet.destinationPath('src/js/app.js'), final, 'utf-8', function (err) {
+			fs.writeFile(yet.destinationPath('src/js/app.js'), newValue, 'utf-8', function (err) {
 				if (err) yet.log(err);
 				yet.log('Updated module dependencies')
 			});

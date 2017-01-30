@@ -25,10 +25,15 @@ module.exports = yeoman.Base.extend({
 			name: 'url',
 			message: 'View url'
 		}, {
-			type: 'input',
-			name: 'state',
-			message: 'View State'
-		}];
+            type: 'input',
+            name: 'state',
+            message: 'View State'
+        }, {
+            type: 'input',
+            name: 'controllerAs',
+            message: 'Controller As Namne?',
+			default: 'vm'
+        }];
 
 		return this.prompt(prompts).then(function (props) {
 			// To access props later use this.props.someAnswer;
@@ -52,7 +57,7 @@ module.exports = yeoman.Base.extend({
 				camelCase: (this.props.name.charAt(0).toUpperCase() + this.props.name.toLowerCase().slice(1)).replace(/(\s|[^A-Za-z0-9])+./g, function(match){
 					return match.slice(match.length-1, match.length).toUpperCase();
 				}).replace(/[^A-Za-z0-9]+$/, ""),
-				controllerAs: this.props.name.toLowerCase().slice(0, 3),
+				controllerAs: this.props.controllerAs,
 				params: []
 			};
 
@@ -112,7 +117,7 @@ module.exports = yeoman.Base.extend({
 		fs.readFile(yet.destinationPath('src/scss/styling/_views.scss'), 'utf-8', function(err, data){
 			if (err) yet.log(err);
 
-			var newValue = data.replace(/(\/\/!!V!!\/\/)/, '@import "../../views/'+properties.camelCase+'/'+properties.camelCase+'; \n//!!V!!//');
+			var newValue = data.replace(/(\/\/!!V!!\/\/)/, '@import "../../views/'+properties.camelCase+'/'+properties.camelCase+'"; \n//!!V!!//');
 
 			fs.writeFile(yet.destinationPath('src/scss/styling/_views.scss'), newValue, 'utf-8', function (err) {
 				if (err) yet.log(err);
