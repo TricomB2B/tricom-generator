@@ -30,6 +30,10 @@
 			// Generator Factories
 			//!!F!!//
 			// DO NOT MODIFY | DO NOT REMOVE LINE ABOVE IF USING GENERATOR
+
+      // Generator Components
+      //!!C!!//
+      // DO NOT MODIFY | DO NOT REMOVE LINE ABOVE IF USING GENERATOR
 		])
 		.run(bootstrap)
 		.config(rootConfig);
